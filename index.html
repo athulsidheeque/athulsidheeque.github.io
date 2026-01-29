@@ -52,6 +52,8 @@
     p {
       opacity: 0.6;
       font-size: 14px;
+      max-width: 500px;
+      margin: 0 auto;
     }
 
     h2 {
@@ -89,22 +91,44 @@
       font-size: 13px;
       opacity: 0.5;
     }
+
+    .contact {
+      text-align: center;
+      padding-bottom: 160px;
+    }
+
+    .contact a {
+      display: block;
+      margin-top: 10px;
+      color: #ffffff;
+      opacity: 0.7;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .contact a:hover {
+      opacity: 1;
+    }
   </style>
 </head>
 
 <body>
 
+  <!-- NAV -->
   <nav>
     <a href="#about">About</a>
     <a href="#works">Works</a>
     <a href="#contact">Contact</a>
   </nav>
 
-  <!-- HERO -->
-  <section class="hero">
+  <!-- ABOUT / HERO -->
+  <section class="hero" id="about">
     <div>
       <h1>Athul Sidheeque</h1>
-      <p>Filmmaker · Photographer</p>
+      <p>
+        Filmmaker · Photographer<br>
+        Exploring stories through stillness and motion.
+      </p>
     </div>
   </section>
 
@@ -123,6 +147,15 @@
       <div class="box">Photo / Video 3</div>
       <div class="box">Photo / Video 4</div>
     </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact">
+    <h2>Contact</h2>
+
+    <a href="mailto:yourmail@example.com">yourmail@example.com</a>
+    <a href="#">Instagram</a>
+    <a href="#">Vimeo</a>
   </section>
 
 </body>
