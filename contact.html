@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact — Athul Sidheeque</title>
 
   <style>
@@ -16,6 +17,7 @@
       position: fixed;
       top: 30px;
       right: 40px;
+      z-index: 1000;
     }
 
     nav a {
@@ -24,15 +26,12 @@
       margin-left: 20px;
       font-size: 14px;
       opacity: 0.7;
+      transition: opacity 0.3s;
     }
 
-    nav a:hover {
-      opacity: 1;
-    }
+    nav a:hover { opacity: 1; }
 
-    section {
-      padding: 120px 10%;
-    }
+    section { padding: 120px 10%; }
 
     h1 {
       font-size: 3rem;
@@ -42,11 +41,11 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 20px;
-      text-align: center;
     }
 
+    /* Styles the box as a clickable block */
     .box {
       background: #1a1a1a;
       height: 120px;
@@ -56,48 +55,60 @@
       justify-content: center;
       font-size: 14px;
       opacity: 0.7;
-      transition: opacity 0.3s;
+      transition: all 0.3s ease;
+      color: #ffffff;
+      text-decoration: none; /* Removes underline from the whole box */
+      border: 1px solid transparent;
     }
 
-    .box a {
-      color: #ffffff;
-      text-decoration: none;
-      margin-top: 5px;
+    .box span {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      opacity: 0.5;
     }
 
     .box:hover {
       opacity: 1;
+      background: #222;
+      border-color: #444;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 2rem; }
+      nav { right: 20px; top: 20px; }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- NAV -->
   <nav>
     <a href="index.html">About</a>
     <a href="works.html">Works</a>
     <a href="contact.html">Contact</a>
   </nav>
 
-  <!-- CONTACT SECTION -->
   <section>
     <h1>Contact</h1>
     <div class="grid">
-      <div class="box">
-        Email
-        <a href="mailto:yourmail@example.com">yourmail@example.com</a>
-      </div>
+      
+      <a href="mailto:yourmail@example.com" class="box">
+        <span>Email</span>
+        yourmail@example.com
+      </a>
 
-      <div class="box">
-        Instagram
-        <a href="https://instagram.com/yourusername" target="_blank">@yourusername</a>
-      </div>
+      <a href="https://instagram.com/yourusername" target="_blank" class="box">
+        <span>Instagram</span>
+        @yourusername
+      </a>
 
-      <div class="box">
+      <a href="https://vimeo.com/yourusername" target="_blank" class="box">
+        <span>Video Portfolios</span>
         Vimeo
-        <a href="https://vimeo.com/yourusername" target="_blank">Vimeo</a>
-      </div>
+      </a>
+
     </div>
   </section>
 
