@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  <link rel="icon" type="image/png" href="favicon-16x16.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>Athul Sidheeque</title>
+
+  <style>
+  body {
+    margin: 0;
+    background: #0e0e0e;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow-x: hidden; /* Prevents accidental side-scrolling */
+  }
+
+  nav {
+    position: fixed;
+    top: 30px;
+    right: 40px;
+    z-index: 1000;
+  }
+
+  nav a {
+    color: #ffffff;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 14px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+  }
+
+  nav a:hover {
+    opacity: 1;
+  }
+
+  .hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  h1 {
+    font-size: 3rem;
+    letter-spacing: 5px; /* Increased for a more premium feel */
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    transition: letter-spacing 0.5s ease; /* Subtle effect when you hover */
+    
+    /* Animation call */
+    animation: fadeInUp 1.2s ease forwards;
+  }
+
+  h1:hover {
+    letter-spacing: 8px; /* Name expands slightly on hover */
+  }
+
+  p {
+    opacity: 0; /* Hidden initially for the animation */
+    font-size: 14px;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+    letter-spacing: 1px;
+    
+    /* Animation call with a slight delay so it follows the name */
+    animation: fadeInUp 1.2s ease forwards 0.4s;
+  }
+
+  /* Keyframes for the Fade-In Effect */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Mobile Adjustment */
+  @media (max-width: 600px) {
+    h1 { font-size: 1.8rem; letter-spacing: 3px; }
+    h1:hover { letter-spacing: 4px; }
+    nav { right: 20px; top: 20px; }
+    nav a { margin-left: 15px; font-size: 12px; }
+  }
+</style>
+</head>
+
+<body>
+
+  <nav>
+    <a href="index.html">About</a>
+    <a href="works.html">Works</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <section class="hero">
+    <div>
+      <h1>Athul Sidheeque</h1>
+      <p>
+        Filmmaker · Photographer<br>
+        Exploring stories through stillness and motion.
+      </p>
+    </div>
+  </section>
+  
+</body>
+</html>
