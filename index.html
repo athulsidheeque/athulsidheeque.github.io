@@ -3,32 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <title>Athul Sidheeque</title>
+
   <style>
     body {
       margin: 0;
+      background: #0e0e0e;
+      color: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    nav {
+      position: fixed;
+      top: 30px;
+      right: 40px;
+    }
+
+    nav a {
+      color: #ffffff;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 14px;
+      opacity: 0.7;
+    }
+
+    nav a:hover {
+      opacity: 1;
+    }
+
+    .hero {
       height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #0e0e0e;
-      color: #ffffff;
-      font-family: Arial, Helvetica, sans-serif;
       text-align: center;
     }
+
     h1 {
       font-size: 3rem;
       letter-spacing: 2px;
+      margin-bottom: 10px;
     }
+
     p {
-      opacity: 0.7;
-      margin-top: 10px;
+      opacity: 0.6;
+      font-size: 14px;
     }
   </style>
 </head>
+
 <body>
-  <div>
-    <h1>Athul Sidheeque</h1>
-    <p>Filmmaker · Photographer</p>
-  </div>
+
+  <nav>
+    <a href="#about">About</a>
+    <a href="#works">Works</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <section class="hero">
+    <div>
+      <h1>Athul Sidheeque</h1>
+      <p>Filmmaker · Photographer</p>
+    </div>
+  </section>
+
 </body>
 </html>
