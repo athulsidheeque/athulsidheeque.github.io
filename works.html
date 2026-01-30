@@ -123,6 +123,10 @@
   color: #fff;
   font-weight: 300;
 }
+  
+  html {
+  scroll-behavior: smooth;
+}
 </style>
   
 </head>
@@ -139,34 +143,50 @@
     <h1>Works</h1>
 
     <div class="tabs">
-      <span>Photos</span>
-      <span>Videos</span>
+      <a href="#video-section" style="text-decoration: none;"><span>Videos</span></a>
+      <a href="#photo-section" style="text-decoration: none;"><span>Photos</span></a>
     </div>
-<div class="grid">
-  
-  <div class="project-item">
-    <div class="box">
-      <div class="video-container">
-        <iframe src="https://player.vimeo.com/video/928421563?h=6bd4eea842&autoplay=1&muted=1&background=1" 
-                frameborder="0" allow="autoplay; fullscreen" 
-                style="position:absolute;top:0;left:0;width:100%;height:100%;">
-        </iframe>
+
+    <div id="video-section">
+      <div class="grid">
+        
+        <div class="project-item">
+          <div class="box">
+            <div class="video-container">
+              <iframe src="https://player.vimeo.com/video/928421563?h=6bd4eea842&autoplay=1&muted=1&background=1" 
+                      frameborder="0" allow="autoplay; fullscreen" 
+                      style="position:absolute;top:0;left:0;width:100%;height:100%;">
+              </iframe>
+            </div>
+          </div>
+          <div class="project-title">Showreel 2024</div>
+        </div>
+
+        <div class="project-item">
+          <div class="box">Project 2</div>
+          <div class="project-title">Film Title Here</div>
+        </div>
+
       </div>
     </div>
-    <div class="project-title">Showreel 2024</div>
-  </div>
 
-  <div class="project-item">
-    <div class="box">Project 2</div>
-    <div class="project-title">Film Title Here</div>
-  </div>
+    <div id="photo-section" style="margin-top: 100px;">
+      <h2 style="font-size: 14px; opacity: 0.4; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px;">Photos</h2>
+      <div class="grid">
+        
+        <div class="project-item">
+          <div class="box">Photo Project 1</div>
+          <div class="project-title">Street Photography</div>
+        </div>
 
-  <div class="project-item">
-    <div class="box">Project 3</div>
-    <div class="project-title">Photography Series</div>
-  </div>
+        <div class="project-item">
+          <div class="box">Photo Project 2</div>
+          <div class="project-title">Portraits</div>
+        </div>
 
-</div>
+      </div>
+    </div>
+
   </section>
 
 </body>
