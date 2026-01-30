@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Works — Athul Sidheeque</title>
 
-  <style>
+<style>
     body {
       margin: 0;
       background: #0e0e0e;
@@ -43,7 +43,7 @@
       margin-bottom: 20px;
     }
 
-    /* Tabs (Visual only for now) */
+    /* Tabs */
     .tabs {
       margin-bottom: 40px;
     }
@@ -59,41 +59,54 @@
 
     .tabs span:hover {
       opacity: 1;
-      border-bottom: 1px solid #fff; /* Adds a little underline effect */
+      border-bottom: 1px solid #fff;
     }
 
     .grid {
       display: grid;
-      /* This makes it responsive automatically */
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
     }
 
     .box {
       background: #1a1a1a;
-      aspect-ratio: 16 / 9; /* Ensures boxes stay rectangular like video screens */
+      aspect-ratio: 16 / 9; 
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 13px;
-      opacity: 0.5;
       color: #fff;
       text-decoration: none;
-      transition: opacity 0.3s;
+      transition: background 0.3s;
+      position: relative; /* Added this to help the video position itself */
+      overflow: hidden;   /* Ensures nothing leaks outside the corners */
     }
+    
+    /* Removed opacity: 0.5 from .box so your video isn't see-through! */
     
     .box:hover {
-      opacity: 1;
       background: #252525;
     }
-    
-    /* Use this class when you add real images */
+
+    /* NEW: Vimeo Video Styles */
+    .video-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .video-container iframe {
+      width: 100%;
+      height: 100%;
+    }
+
     .project-img {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Ensures image covers the box without stretching */
+      object-fit: cover;
     }
-  </style>
+</style>
+  
 </head>
 
 <body>
