@@ -59,19 +59,18 @@
 
   /* --- MASONRY GRID SYSTEM --- */
   .grid {
-    column-count: 3; /* 3 Columns like your drawing */
+    column-count: 3; 
     column-gap: 30px;
     width: 100%;
   }
 
-  /* Responsive: 2 columns on tablets, 1 on phones */
   @media (max-width: 1000px) { .grid { column-count: 2; } }
   @media (max-width: 600px) { .grid { column-count: 1; } }
 
   .project-item {
-    display: inline-block; /* Prevents items from splitting between columns */
+    display: inline-block; 
     width: 100%;
-    margin-bottom: 40px; /* Space below each project */
+    margin-bottom: 40px;
   }
 
   .box {
@@ -80,14 +79,18 @@
     position: relative;
     overflow: hidden;
     transition: background 0.3s;
-    /* Aspect-ratio removed to allow different heights */
   }
 
-  /* For 16:9 videos, we use this container inside the box */
+  /* Standard 16:9 Video Container */
   .video-container {
     position: relative;
-    padding-bottom: 56.25%; /* Forces 16:9 ratio for video players */
+    padding-bottom: 56.25%; 
     height: 0;
+  }
+
+  /* Specific 1:1 Square Container for YouTube */
+  .video-container.square-ratio {
+    padding-bottom: 100%;
   }
 
   .video-container iframe {
@@ -100,7 +103,7 @@
 
   .project-img {
     width: 100%;
-    height: auto; /* Respects original image height (Portrait or Landscape) */
+    height: auto;
     display: block;
   }
 
@@ -144,15 +147,14 @@
         <div class="project-item">
           <div class="box">
             <div class="video-container">
-              <iframe src="https://player.vimeo.com/video/928421563?h=6bd4eea842&autoplay=1&muted=1&background=1#t=0.5s" frameborder="0" allow="autoplay; fullscreen"></iframe>
+              <iframe src="https://player.vimeo.com/video/928421563?h=6bd4eea842&autoplay=1&muted=1&background=1&loop=1#t=0.5s" frameborder="0" allow="autoplay; fullscreen"></iframe>
             </div>
           </div>
-          <div class="project-title">nurdit logo animation</div>
         </div>
 
         <div class="project-item">
           <div class="box">
-            <div class="video-container">
+            <div class="video-container square-ratio">
               <iframe src="https://www.youtube.com/embed/uS1-Km2wDNM?autoplay=1&mute=1&controls=0&loop=1&playlist=uS1-Km2wDNM&rel=0&modestbranding=1&start=1" frameborder="0" allow="autoplay; encrypted-media; fullscreen"></iframe>
             </div>
           </div>
@@ -160,14 +162,14 @@
         </div>
 
         <div class="project-item">
-          <div class="box" style="height: 400px; display:flex; align-items:center; justify-content:center;">Project 3 (Vertical Example)</div>
+          <div class="box" style="height: 400px; display:flex; align-items:center; justify-content:center; color: #444;">Vertical Placeholder</div>
           <div class="project-title">Film Title Here</div>
         </div>
 
         <div class="project-item">
           <div class="box">
              <div class="video-container">
-              <iframe src="https://player.vimeo.com/video/928421563?background=1" frameborder="0"></iframe>
+              <iframe src="https://player.vimeo.com/video/928421563?autoplay=1&muted=1&background=1&loop=1" frameborder="0" allow="autoplay; fullscreen"></iframe>
             </div>
           </div>
           <div class="project-title">Film Title Here</div>
@@ -178,7 +180,6 @@
 
     <div id="photo-section" class="content-section">
       <div class="grid">
-        
         <div class="project-item">
           <div class="box">
             <img src="images/apricot-fig.jpg" class="project-img">
@@ -192,7 +193,6 @@
           </div>
           <div class="project-title">Portraits</div>
         </div>
-
       </div>
     </div>
 
