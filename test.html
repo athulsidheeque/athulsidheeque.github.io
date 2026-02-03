@@ -1,99 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
-  <link rel="icon" type="image/png" href="favicon-16x16.png">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-  <title>Athul Sidheeque</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Athul Sidheeque</title>
   <style>
-  body {
-    margin: 0;
-    background: #0e0e0e;
-    color: #ffffff;
-    font-family: Arial, Helvetica, sans-serif;
-    overflow-x: hidden; /* Prevents accidental side-scrolling */
-  }
-
-  nav {
-    position: fixed;
-    top: 30px;
-    right: 40px;
-    z-index: 1000;
-  }
-
-  nav a {
-    color: #ffffff;
-    text-decoration: none;
-    margin-left: 20px;
-    font-size: 14px;
-    opacity: 0.7;
-    transition: opacity 0.3s ease;
-  }
-
-  nav a:hover {
-    opacity: 1;
-  }
-
-  .hero {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 0 20px;
-  }
-
-  h1 {
-    font-size: 3rem;
-    letter-spacing: 5px; /* Increased for a more premium feel */
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    transition: letter-spacing 0.5s ease; /* Subtle effect when you hover */
-    
-    /* Animation call */
-    animation: fadeInUp 1.2s ease forwards;
-  }
-
-  h1:hover {
-    letter-spacing: 8px; /* Name expands slightly on hover */
-  }
-
-  p {
-    opacity: 0; /* Hidden initially for the animation */
-    font-size: 14px;
-    max-width: 500px;
-    margin: 0 auto;
-    line-height: 1.6;
-    letter-spacing: 1px;
-    
-    /* Animation call with a slight delay so it follows the name */
-    animation: fadeInUp 1.2s ease forwards 0.4s;
-  }
-
-  /* Keyframes for the Fade-In Effect */
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
+    body {
+      margin: 0;
+      background: #0e0e0e;
+      color: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 
-  /* Mobile Adjustment */
-  @media (max-width: 600px) {
-    h1 { font-size: 1.8rem; letter-spacing: 3px; }
-    h1:hover { letter-spacing: 4px; }
-    nav { right: 20px; top: 20px; }
-    nav a { margin-left: 15px; font-size: 12px; }
-  }
-</style>
+    nav {
+      position: fixed;
+      top: 30px;
+      right: 40px;
+      z-index: 1000;
+    }
+
+    nav a {
+      color: #ffffff;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 14px;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+    }
+
+    nav a:hover { opacity: 1; }
+
+    section {
+      padding: 160px 10% 80px 10%;
+      display: flex;
+      gap: 60px;
+      align-items: flex-start;
+    }
+
+    /* Responsive for mobile */
+    @media (max-width: 900px) {
+      section { flex-direction: column; padding-top: 120px; }
+      .about-image { width: 100% !important; order: 1; }
+      .about-text { order: 2; }
+    }
+
+    .about-image {
+      width: 40%;
+      position: sticky;
+      top: 120px;
+    }
+
+    .about-image img {
+      width: 100%;
+      height: auto;
+      filter: grayscale(20%);
+    }
+
+    .about-text {
+      width: 60%;
+    }
+
+    h1 { font-size: 3rem; margin-top: 0; margin-bottom: 30px; }
+
+    p {
+      font-size: 18px;
+      opacity: 0.8;
+      max-width: 600px;
+      margin-bottom: 40px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 40px;
+    }
+
+    .info-item h3 {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-bottom: 15px;
+    }
+
+    .info-item ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.7;
+    }
+
+    .info-item li { margin-bottom: 8px; }
+  </style>
 </head>
-
 <body>
 
   <nav>
@@ -102,15 +105,40 @@
     <a href="contact.html">Contact</a>
   </nav>
 
-  <section class="hero">
-    <div>
+  <section>
+    <div class="about-image">
+      <img src="images/athul-portrait.jpg" alt="Athul Sidheeque">
+    </div>
+
+    <div class="about-text">
       <h1>Athul Sidheeque</h1>
       <p>
-        Filmmaker · Photographer<br>
-        Exploring stories through stillness and motion.
+        Filmmaker and Photographer based in [Your Location]. I specialize in [Your Niche, e.g., commercial cinematography and editorial street photography], blending technical precision with raw storytelling.
       </p>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <h3>Services</h3>
+          <ul>
+            <li>Cinematography</li>
+            <li>Directing</li>
+            <li>Color Grading</li>
+            <li>Motion Design</li>
+          </ul>
+        </div>
+
+        <div class="info-item">
+          <h3>Selected Clients</h3>
+          <ul>
+            <li>Yoga Bar</li>
+            <li>Nurdit</li>
+            <li>5 Star</li>
+            <li>[Client Name]</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </section>
-  
+
 </body>
 </html>
