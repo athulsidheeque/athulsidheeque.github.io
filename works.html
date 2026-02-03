@@ -36,7 +36,6 @@
 
   h1 { font-size: 2.5rem; margin-bottom: 20px; }
 
-  /* Tabs Styling - Fixed for Switching */
   .tabs {
     margin-bottom: 40px;
     display: flex;
@@ -49,7 +48,7 @@
     cursor: pointer;
     border-bottom: 1px solid transparent;
     padding-bottom: 5px;
-    color: #ffffff; /* Prevents purple/blue link colors */
+    color: #ffffff;
     transition: opacity 0.3s;
   }
 
@@ -58,30 +57,52 @@
     border-bottom: 1px solid #fff;
   }
 
-  /* Grid Layout - Set to fit 3 items across */
+  /* --- MASONRY GRID SYSTEM --- */
   .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-    gap: 30px;
+    column-count: 3; /* 3 Columns like your drawing */
+    column-gap: 30px;
+    width: 100%;
   }
 
+  /* Responsive: 2 columns on tablets, 1 on phones */
+  @media (max-width: 1000px) { .grid { column-count: 2; } }
+  @media (max-width: 600px) { .grid { column-count: 1; } }
+
   .project-item {
-    display: flex;
-    flex-direction: column;
+    display: inline-block; /* Prevents items from splitting between columns */
+    width: 100%;
+    margin-bottom: 40px; /* Space below each project */
   }
 
   .box {
     background: #1a1a1a;
-    aspect-ratio: 16 / 9; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 100%;
     position: relative;
     overflow: hidden;
     transition: background 0.3s;
+    /* Aspect-ratio removed to allow different heights */
   }
 
-  .box:hover { background: #252525; }
+  /* For 16:9 videos, we use this container inside the box */
+  .video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* Forces 16:9 ratio for video players */
+    height: 0;
+  }
+
+  .video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .project-img {
+    width: 100%;
+    height: auto; /* Respects original image height (Portrait or Landscape) */
+    display: block;
+  }
 
   .project-title {
     margin-top: 12px;
@@ -93,25 +114,8 @@
     font-weight: 300;
   }
 
-  /* Switching Menu Logic */
-  .content-section {
-    display: none; /* Everything hidden by default */
-  }
-
-  .content-section.active {
-    display: block; /* Only show active section */
-  }
-
-  .video-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-
-  .video-container iframe {
-    width: 100%;
-    height: 100%;
-  }
+  .content-section { display: none; }
+  .content-section.active { display: block; }
 
   html { scroll-behavior: smooth; }
 </style>
@@ -140,39 +144,32 @@
         <div class="project-item">
           <div class="box">
             <div class="video-container">
-             <iframe 
-  src="https://player.vimeo.com/video/928421563?h=6bd4eea842&autoplay=1&muted=1&background=1#t=0.5s" 
-  frameborder="0" 
-  allow="autoplay; fullscreen" 
-  style="position:absolute;top:0;left:0;width:100%;height:100%;">
-</iframe>
+              <iframe src="https://player.vimeo.com/video/928421563?h=6bd4eea842&autoplay=1&muted=1&background=1#t=0.5s" frameborder="0" allow="autoplay; fullscreen"></iframe>
             </div>
           </div>
           <div class="project-title">nurdit logo animation</div>
         </div>
 
         <div class="project-item">
-  <div class="box">
-    <div class="video-container">
-      <iframe 
-        src="https://www.youtube.com/embed/uS1-Km2wDNM?autoplay=1&mute=1&controls=0&loop=1&playlist=uS1-Km2wDNM&rel=0&modestbranding=1&start=1" 
-        frameborder="0" 
-        allow="autoplay; encrypted-media; fullscreen" 
-        style="position:absolute;top:0;left:0;width:100%;height:100%;">    
-      </iframe>
-      
-    </div>
-  </div>
-  <div class="project-title">chocolate commercial shot on s25</div>
-</div>
+          <div class="box">
+            <div class="video-container">
+              <iframe src="https://www.youtube.com/embed/uS1-Km2wDNM?autoplay=1&mute=1&controls=0&loop=1&playlist=uS1-Km2wDNM&rel=0&modestbranding=1&start=1" frameborder="0" allow="autoplay; encrypted-media; fullscreen"></iframe>
+            </div>
+          </div>
+          <div class="project-title">chocolate commercial</div>
+        </div>
 
         <div class="project-item">
-          <div class="box">Project 3</div>
+          <div class="box" style="height: 400px; display:flex; align-items:center; justify-content:center;">Project 3 (Vertical Example)</div>
           <div class="project-title">Film Title Here</div>
         </div>
 
         <div class="project-item">
-          <div class="box">Project 4</div>
+          <div class="box">
+             <div class="video-container">
+              <iframe src="https://player.vimeo.com/video/928421563?background=1" frameborder="0"></iframe>
+            </div>
+          </div>
           <div class="project-title">Film Title Here</div>
         </div>
 
@@ -183,12 +180,16 @@
       <div class="grid">
         
         <div class="project-item">
-          <div class="box">Photo Project 1</div>
-          <div class="project-title">Street Photography</div>
+          <div class="box">
+            <img src="images/apricot-fig.jpg" class="project-img">
+          </div>
+          <div class="project-title">yoga bar apricot fig</div>
         </div>
 
         <div class="project-item">
-          <div class="box">Photo Project 2</div>
+          <div class="box">
+            <img src="images/your-tall-photo.jpg" class="project-img">
+          </div>
           <div class="project-title">Portraits</div>
         </div>
 
@@ -199,15 +200,12 @@
 
   <script>
     function showSection(sectionId, tabId) {
-      // 1. Hide all sections
       const sections = document.querySelectorAll('.content-section');
       sections.forEach(s => s.classList.remove('active'));
 
-      // 2. Remove active styling from all tab buttons
       const tabs = document.querySelectorAll('.tabs span');
       tabs.forEach(t => t.classList.remove('active'));
 
-      // 3. Show the selected section and highlight the clicked tab
       document.getElementById(sectionId).classList.add('active');
       document.getElementById(tabId).classList.add('active');
     }
