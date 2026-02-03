@@ -32,24 +32,75 @@
 
     nav a:hover { opacity: 1; }
 
-    section { padding: 120px 10%; }
+    section { 
+      padding: 120px 10% 60px 10%; 
+      max-width: 900px;
+      margin: 0 auto;
+    }
 
     h1 {
       font-size: 3rem;
       margin-bottom: 40px;
-      text-align: center;
+      text-align: left;
     }
 
+    /* FORM STYLING */
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 40px;
+    }
+
+    .contact-form input, 
+    .contact-form textarea {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      color: white;
+      padding: 20px;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .contact-form input:focus, 
+    .contact-form textarea:focus {
+      border-color: #666;
+    }
+
+    .contact-form textarea {
+      height: 150px;
+      resize: vertical;
+    }
+
+    .contact-form button {
+      background: #ffffff;
+      color: #000;
+      border: none;
+      padding: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 12px;
+      transition: opacity 0.3s;
+    }
+
+    .contact-form button:hover {
+      opacity: 0.8;
+    }
+
+    /* SOCIAL GRID */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: 1fr 1fr;
       gap: 20px;
     }
 
-    /* Styles the box as a clickable block */
     .box {
       background: #1a1a1a;
-      height: 120px;
+      height: 100px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -58,15 +109,15 @@
       opacity: 0.7;
       transition: all 0.3s ease;
       color: #ffffff;
-      text-decoration: none; /* Removes underline from the whole box */
+      text-decoration: none;
       border: 1px solid transparent;
     }
 
     .box span {
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
+      letter-spacing: 2px;
+      margin-bottom: 5px;
       opacity: 0.5;
     }
 
@@ -79,6 +130,7 @@
     @media (max-width: 600px) {
       h1 { font-size: 2rem; }
       nav { right: 20px; top: 20px; }
+      .grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -91,15 +143,17 @@
     <a href="contact.html">Contact</a>
   </nav>
 
-<section>
+  <section>
     <h1>Get in Touch</h1>
-    <div class="grid">
-      
-      <a href="mailto:blah@gmail.com" class="box">
-        <span>Connect</span>
-        Send an Email
-      </a>
 
+    <form action="https://formspree.io/f/mlglypjz" method="POST" class="contact-form">
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="email" name="email" placeholder="Your Email Address" required>
+      <textarea name="message" placeholder="Tell me about your project..." required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+
+    <div class="grid">
       <a href="https://instagram.com/athul_sidiq" target="_blank" class="box">
         <span>Instagram</span>
         @athul_sidiq
@@ -109,7 +163,6 @@
         <span>Professional</span>
         LinkedIn
       </a>
-
     </div>
   </section>
 
