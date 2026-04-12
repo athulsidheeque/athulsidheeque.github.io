@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="icon" type="image/png" href="favicon-16x16.png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Athul Sidheeque</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --accent-red: #f70202;
     }
-    
+
     body, html {
       margin: 0;
       padding: 0;
       background: #050505;
       color: white;
-      font-family: Arial, sans-serif;
+      font-family: 'Helvetica', Arial, sans-serif;
       overflow-x: hidden;
     }
 
-    /* Cinematic Grain */
+    /* Cinematic Film Grain */
     body::after {
       content: "";
       position: fixed;
@@ -26,10 +30,9 @@
       background: url('https://grainy-gradients.vercel.app/noise.svg');
       opacity: 0.05;
       pointer-events: none;
-      z-index: 999;
+      z-index: 1000;
     }
 
-    /* Hero Section */
     #hero {
       position: relative;
       height: 100vh;
@@ -37,33 +40,32 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
-      transition: background 0.5s ease;
+      transition: background 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+      z-index: 2;
     }
 
-    /* The Name */
-    .hero-name {
-      position: relative;
-      font-size: 8vw;
-      font-weight: 900;
-      letter-spacing: -2px;
-      text-transform: none; /* Controlled by JS/Hover */
-      z-index: 10;
-      pointer-events: auto;
-      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-      cursor: crosshair;
-    }
-
-    /* Hover State - Minh Pham Style */
+    /* Minh Pham Style Inversion */
     #hero.active {
       background: var(--accent-red);
     }
 
+    .hero-name {
+      position: relative;
+      font-size: 8.5vw;
+      font-weight: 900;
+      z-index: 10;
+      pointer-events: auto;
+      transition: all 0.3s ease;
+      cursor: crosshair;
+      color: white;
+      font-family: 'Archivo Black', sans-serif;
+      letter-spacing: -0.02em;
+    }
+
     #hero.active .hero-name {
-      color: black;
-      font-family: 'Guisol', 'Impact', sans-serif; /* Fallback to Impact if Guisol isn't loaded */
+      color: #000;
       text-transform: lowercase;
-      transform: scale(1.05);
+      letter-spacing: -0.05em;
     }
 
     canvas {
@@ -73,16 +75,11 @@
       z-index: 5;
     }
 
-    /* Scroll for About Section */
-    #about-section {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    #about-content {
+      position: relative;
+      z-index: 10;
       background: #050505;
     }
-
-    /* Keep your existing .text-wrapper styles here */
   </style>
 </head>
 <body>
@@ -92,23 +89,28 @@
     <div class="hero-name" id="nameTrigger">Athul Sidheeque</div>
   </section>
 
-  <section id="about-section">
-    </section>
+  <div id="about-content"></div>
 
   <script>
     const canvas = document.getElementById('particleCanvas');
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     const hero = document.getElementById('hero');
     const nameTrigger = document.getElementById('nameTrigger');
 
     let particles = [];
-    let mouse = { x: 0, y: 0, radius: 100 };
+    let mouse = { x: -1000, y: -1000, radius: 90 };
     let isActive = false;
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    function setCanvasSize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
 
-    // Interaction Trigger
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
     nameTrigger.addEventListener('mouseenter', () => {
       isActive = true;
       hero.classList.add('active');
@@ -119,26 +121,20 @@
       hero.classList.remove('active');
     });
 
-    window.addEventListener('mousemove', (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-    });
-
     class Particle {
       constructor(x, y) {
-        this.x = x;
-        this.y = y;
+        this.x = x + (Math.random() * 20 - 10);
+        this.y = y + (Math.random() * 20 - 10);
         this.baseX = x;
         this.baseY = y;
-        this.size = Math.random() * 2 + 1;
-        this.density = (Math.random() * 30) + 1;
+        this.size = Math.random() * 1.5 + 0.5;
+        this.density = (Math.random() * 25) + 5;
       }
 
       draw() {
-        ctx.fillStyle = isActive ? 'black' : 'white';
+        ctx.fillStyle = isActive ? 'rgba(0,0,0,0.9)' : 'rgba(255,255,255,0.7)';
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.closePath();
         ctx.fill();
       }
 
@@ -146,37 +142,43 @@
         let dx = mouse.x - this.x;
         let dy = mouse.y - this.y;
         let distance = Math.sqrt(dx * dx + dy * dy);
-        let forceDirectionX = dx / distance;
-        let forceDirectionY = dy / distance;
-        let maxDistance = mouse.radius;
-        let force = (maxDistance - distance) / maxDistance;
-        let directionX = forceDirectionX * force * this.density;
-        let directionY = forceDirectionY * force * this.density;
-
+        
         if (distance < mouse.radius) {
+          let force = (mouse.radius - distance) / mouse.radius;
+          let directionX = (dx / distance) * force * this.density;
+          let directionY = (dy / distance) * force * this.density;
+          
           this.x -= directionX;
           this.y -= directionY;
         } else {
-          if (this.x !== this.baseX) {
-            let dx = this.x - this.baseX;
-            this.x -= dx / 10;
-          }
-          if (this.y !== this.baseY) {
-            let dy = this.y - this.baseY;
-            this.y -= dy / 10;
-          }
+          this.x += (this.baseX - this.x) * 0.08;
+          this.y += (this.baseY - this.y) * 0.08;
         }
       }
     }
 
     function init() {
+      setCanvasSize();
       particles = [];
-      // This creates a simple noise grid around the center
-      // For high-end "text-shaped" particles, we would use ctx.getImageData
-      for (let i = 0; i < 500; i++) {
-        let x = (Math.random() * 400) + (canvas.width/2 - 200);
-        let y = (Math.random() * 200) + (canvas.height/2 - 100);
-        particles.push(new Particle(x, y));
+      
+      // Temporary render to capture pixel data
+      ctx.fillStyle = 'white';
+      ctx.font = '900 8.5vw "Archivo Black"';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('Athul Sidheeque', canvas.width / 2, canvas.height / 2);
+      
+      const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Scan and create particles (Gap adjustment for density)
+      for (let y = 0; y < canvas.height; y += 4) {
+        for (let x = 0; x < canvas.width; x += 4) {
+          const index = (y * canvas.width + x) * 4;
+          if (pixels[index + 3] > 128) { // If pixel alpha is visible
+            particles.push(new Particle(x, y));
+          }
+        }
       }
     }
 
@@ -189,12 +191,13 @@
       requestAnimationFrame(animate);
     }
 
-    init();
-    animate();
+    // Delay init slightly to ensure font is loaded
+    window.onload = () => {
+        init();
+        animate();
+    };
 
     window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
       init();
     });
   </script>
