@@ -6,23 +6,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Athul Sidheeque</title>
   
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      --accent-red: #f70202;
-    }
-
     body, html {
       margin: 0;
       padding: 0;
       background: #050505;
-      color: white;
-      font-family: 'Helvetica', Arial, sans-serif;
       overflow-x: hidden;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
-    /* Cinematic Film Grain */
+    /* Grainy Texture */
     body::after {
       content: "";
       position: fixed;
@@ -33,173 +28,191 @@
       z-index: 1000;
     }
 
-    #hero {
+    .hero {
       position: relative;
       height: 100vh;
       width: 100%;
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
-      transition: background 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-      z-index: 2;
+      transition: background 0.4s ease;
     }
 
-    /* Minh Pham Style Inversion */
-    #hero.active {
-      background: var(--accent-red);
+    /* Hover State */
+    .hero.active {
+      background: #f70202; /* Your Red */
     }
 
-    .hero-name {
-      position: relative;
-      font-size: 8.5vw;
-      font-weight: 900;
+    /* Hover Strip */
+    .hover-strip {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 14px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 10px 24px;
+      border: 1px solid #333;
+      color: #888;
+      cursor: pointer;
       z-index: 10;
-      pointer-events: auto;
       transition: all 0.3s ease;
-      cursor: crosshair;
-      color: white;
-      font-family: 'Archivo Black', sans-serif;
-      letter-spacing: -0.02em;
     }
 
-    #hero.active .hero-name {
+    .hover-strip:hover {
+      background: #f70202;
       color: #000;
+      border-color: #000;
+      font-family: 'DM Serif Display', serif;
       text-transform: lowercase;
-      letter-spacing: -0.05em;
+      letter-spacing: 0px;
+      font-size: 18px;
+    }
+
+    /* Main Name Display */
+    .hero-name {
+      position: absolute;
+      font-size: 7vw;
+      font-weight: 900;
+      color: white;
+      z-index: 3;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .hero.active .hero-name {
+      color: #000;
+      font-family: 'DM Serif Display', serif;
+      text-transform: lowercase;
+      font-size: 8vw;
     }
 
     canvas {
       position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 5;
-    }
-
-    #about-content {
-      position: relative;
-      z-index: 10;
-      background: #050505;
+      inset: 0;
+      z-index: 2;
     }
   </style>
 </head>
 <body>
 
-  <section id="hero">
+  <div class="hero" id="hero">
+    <div class="hover-strip" id="hoverStrip">making good shit since</div>
     <canvas id="particleCanvas"></canvas>
-    <div class="hero-name" id="nameTrigger">Athul Sidheeque</div>
-  </section>
-
-  <div id="about-content"></div>
+    <h1 class="hero-name" id="heroName">Athul Sidheeque</h1>
+  </div>
 
   <script>
-    const canvas = document.getElementById('particleCanvas');
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    const hero = document.getElementById('hero');
-    const nameTrigger = document.getElementById('nameTrigger');
+    const canvas = document.getElementById("particleCanvas");
+    const ctx = canvas.getContext("2d");
+    const hero = document.getElementById("hero");
+    const hoverStrip = document.getElementById("hoverStrip");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
     let particles = [];
-    let mouse = { x: -1000, y: -1000, radius: 90 };
-    let isActive = false;
+    let mouse = { x: -1000, y: -1000 };
+    let isHovering = false;
 
-    function setCanvasSize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-
-    window.addEventListener('mousemove', (e) => {
+    window.addEventListener("mousemove", (e) => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
     });
 
-    nameTrigger.addEventListener('mouseenter', () => {
-      isActive = true;
-      hero.classList.add('active');
+    hoverStrip.addEventListener("mouseenter", () => {
+      isHovering = true;
+      hero.classList.add("active");
+    });
+    
+    hoverStrip.addEventListener("mouseleave", () => {
+      isHovering = false;
+      hero.classList.remove("active");
     });
 
-    nameTrigger.addEventListener('mouseleave', () => {
-      isActive = false;
-      hero.classList.remove('active');
-    });
-
-    class Particle {
-      constructor(x, y) {
-        this.x = x + (Math.random() * 20 - 10);
-        this.y = y + (Math.random() * 20 - 10);
-        this.baseX = x;
-        this.baseY = y;
-        this.size = Math.random() * 1.5 + 0.5;
-        this.density = (Math.random() * 25) + 5;
-      }
-
-      draw() {
-        ctx.fillStyle = isActive ? 'rgba(0,0,0,0.9)' : 'rgba(255,255,255,0.7)';
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      update() {
-        let dx = mouse.x - this.x;
-        let dy = mouse.y - this.y;
-        let distance = Math.sqrt(dx * dx + dy * dy);
-        
-        if (distance < mouse.radius) {
-          let force = (mouse.radius - distance) / mouse.radius;
-          let directionX = (dx / distance) * force * this.density;
-          let directionY = (dy / distance) * force * this.density;
-          
-          this.x -= directionX;
-          this.y -= directionY;
-        } else {
-          this.x += (this.baseX - this.x) * 0.08;
-          this.y += (this.baseY - this.y) * 0.08;
-        }
-      }
-    }
-
+    // 1. Map Text to Coordinates
     function init() {
-      setCanvasSize();
-      particles = [];
-      
-      // Temporary render to capture pixel data
-      ctx.fillStyle = 'white';
-      ctx.font = '900 8.5vw "Archivo Black"';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('Athul Sidheeque', canvas.width / 2, canvas.height / 2);
-      
-      const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const tCanvas = document.createElement("canvas");
+      const tCtx = tCanvas.getContext("2d");
+      tCanvas.width = canvas.width;
+      tCanvas.height = canvas.height;
 
-      // Scan and create particles (Gap adjustment for density)
-      for (let y = 0; y < canvas.height; y += 4) {
-        for (let x = 0; x < canvas.width; x += 4) {
-          const index = (y * canvas.width + x) * 4;
-          if (pixels[index + 3] > 128) { // If pixel alpha is visible
-            particles.push(new Particle(x, y));
+      tCtx.fillStyle = "white";
+      tCtx.font = "bold 130px Arial"; // Matches the base look
+      tCtx.textAlign = "center";
+      tCtx.textBaseline = "middle";
+      tCtx.fillText("ATHUL SIDHEEQUE", tCanvas.width / 2, tCanvas.height / 2);
+
+      const data = tCtx.getImageData(0, 0, tCanvas.width, tCanvas.height);
+      particles = [];
+
+      // Scan pixels (gap of 6 for noise effect)
+      for (let y = 0; y < tCanvas.height; y += 6) {
+        for (let x = 0; x < tCanvas.width; x += 6) {
+          const index = (y * tCanvas.width + x) * 4;
+          if (data.data[index + 3] > 128) {
+            particles.push({
+              x: Math.random() * canvas.width, // Start scattered
+              y: Math.random() * canvas.height,
+              baseX: x,
+              baseY: y,
+              vx: 0,
+              vy: 0,
+              size: Math.random() * 2 + 1
+            });
           }
         }
       }
     }
 
+    // 2. Animate
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = 0; i < particles.length; i++) {
-        particles[i].draw();
-        particles[i].update();
-      }
+
+      particles.forEach(p => {
+        let dx = mouse.x - p.x;
+        let dy = mouse.y - p.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+        let forceRadius = 120;
+
+        if (dist < forceRadius) {
+          let force = (forceRadius - dist) / forceRadius;
+          let angle = Math.atan2(dy, dx);
+          p.vx -= Math.cos(angle) * force * 4;
+          p.vy -= Math.sin(angle) * force * 4;
+        }
+
+        // Physics: Return to origin + Damping
+        p.vx += (p.baseX - p.x) * 0.03;
+        p.vy += (p.baseY - p.y) * 0.03;
+        p.vx *= 0.92;
+        p.vy *= 0.92;
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // Visual Inversion
+        ctx.fillStyle = isHovering 
+          ? "rgba(0,0,0,0.85)" 
+          : "rgba(195,255,0,0.8)"; // Your signature lime color
+        
+        ctx.fillRect(p.x, p.y, p.size, p.size);
+      });
+
       requestAnimationFrame(animate);
     }
 
-    // Delay init slightly to ensure font is loaded
-    window.onload = () => {
-        init();
-        animate();
-    };
-
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
       init();
     });
+
+    init();
+    animate();
   </script>
 </body>
 </html>
