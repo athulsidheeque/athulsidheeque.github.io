@@ -5,18 +5,38 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About — Athul Sidheeque</title>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
   <style>
     body {
       margin: 0;
       background: #050505;
-      color: #d0d0d0;
       font-family: Arial, Helvetica, sans-serif;
       height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
+    }
+
+    #webgl {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: url('https://grainy-gradients.vercel.app/noise.svg');
+      opacity: 0.04;
+      pointer-events: none;
+      z-index: 10;
     }
 
     nav {
@@ -31,54 +51,49 @@
       text-decoration: none;
       margin-left: 20px;
       font-size: 14px;
-      opacity: 0.7;
+      opacity: 0.5;
       transition: opacity 0.3s;
     }
 
     nav a:hover { opacity: 1; }
 
-    /* Spotlight layer */
-    #spotlight {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    /* Main Text Container */
-    .text-container {
+    .text-wrapper {
       position: relative;
       z-index: 2;
       max-width: 750px;
       padding: 40px;
-      font-size: 24px; 
-      line-height: 1.8;
-      font-weight: 500;
-      cursor: default;
-      user-select: none;
-      word-break: normal;
-      overflow-wrap: normal;
     }
 
-    .letter {
-      display: inline-block;
-      white-space: pre;
-      transition:
-        transform 0.15s ease,
-        opacity 0.25s ease,
-        text-shadow 0.25s ease;
-      opacity: 0.55; 
-      color: #cfcfcf;
-      will-change: transform, opacity, text-shadow;
+    .text {
+      font-size: 24px;
+      line-height: 1.8;
+      font-weight: 500;
+      user-select: none;
+    }
+
+    .base { color: #222; }
+
+    .glow {
+      position: absolute;
+      top: 40px;
+      left: 40px;
+      right: 40px;
+      color: #c3ff00;
+      pointer-events: none;
+      mix-blend-mode: screen;
+
+      -webkit-mask-image: radial-gradient(circle 0px at 0 0, white, transparent);
+      mask-image: radial-gradient(circle 0px at 0 0, white, transparent);
+
+      text-shadow:
+        0 0 20px rgba(195,255,0,0.6),
+        0 0 60px rgba(195,255,0,0.3);
     }
   </style>
 </head>
 <body>
 
-  <div id="spotlight"></div>
+  <canvas id="webgl"></canvas>
 
   <nav>
     <a href="index.html">About</a>
@@ -86,98 +101,80 @@
     <a href="contact.html">Contact</a>
   </nav>
 
-  <div class="text-container" id="text">
-    I spend my days (and a lot of my nights) exploring stories through my passion to create. I love the journey of becoming better, taking what I learn and turning it into something special. Nothing matters as much as the soul of the project. From the first time I picked up a camera to learning the complexities, it’s all been about that one spark: the drive to capture and deliver a feeling. I don’t think I’ll ever stop being a student of the craft; there’s always a new way to see things.
+  <div class="text-wrapper" id="wrapper">
+    <div class="text base" id="baseText">
+      I spend my days (and a lot of my nights) exploring stories through my passion to create. I love the journey of becoming better, taking what I learn and turning it into something special. Nothing matters as much as the soul of the project. From the first time I picked up a camera to learning the complexities, it’s all been about that one spark: the drive to capture and deliver a feeling. I don’t think I’ll ever stop being a student of the craft; there’s always a new way to see things.
+    </div>
+    <div class="text glow" id="glowText"></div>
   </div>
 
   <script>
-    const container = document.getElementById("text");
-    const spotlight = document.getElementById("spotlight");
-    const textContent = container.innerText.trim();
+    // --- THREE.JS SHADER SETUP ---
+    const canvas = document.getElementById("webgl");
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // Rebuild character by character
-    container.innerHTML = "";
-    [...textContent].forEach(char => {
-      const span = document.createElement("span");
-      span.classList.add("letter");
-      span.innerText = char;
-      container.appendChild(span);
-    });
-
-    const letters = document.querySelectorAll(".letter");
-
-    // Easing variables
-    let currentX = 0, currentY = 0;
-    let targetX = 0, targetY = 0;
-    let isInside = false;
-
-    // Track mouse status
+    let mouse = { x: 0.5, y: 0.5 };
     window.addEventListener("mousemove", (e) => {
-      targetX = e.clientX;
-      targetY = e.clientY;
-      isInside = true; // Global tracking for smoother entry
+      mouse.x = e.clientX / window.innerWidth;
+      mouse.y = 1 - e.clientY / window.innerHeight;
     });
 
-    document.addEventListener("mouseleave", () => {
-      isInside = false;
-      spotlight.style.background = "none";
-    });
+    const material = new THREE.ShaderMaterial({
+      transparent: true,
+      uniforms: {
+        u_mouse: { value: new THREE.Vector2(0.5, 0.5) },
+        u_time: { value: 0 },
+        u_res: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+      },
+      fragmentShader: `
+        uniform vec2 u_mouse;
+        uniform vec2 u_res;
+        uniform float u_time;
 
-    function animate() {
-      // Linear interpolation (lerp) for smooth following
-      currentX += (targetX - currentX) * 0.08;
-      currentY += (targetY - currentY) * 0.08;
-
-      if (isInside) {
-        spotlight.style.background = `
-          radial-gradient(
-            circle 240px at ${currentX}px ${currentY}px,
-            rgba(195,255,0,0.18),
-            transparent 70%
-          )
-        `;
-      }
-
-      letters.forEach(letter => {
-        const rect = letter.getBoundingClientRect();
-        const lx = rect.left + rect.width / 2;
-        const ly = rect.top + rect.height / 2;
-
-        const dx = currentX - lx;
-        const dy = currentY - ly;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        const maxDist = 140;
-
-        if (distance < maxDist && isInside) {
-          const strength = (maxDist - distance) / maxDist;
-
-          letter.style.opacity = 0.55 + strength * 0.45;
-
-          // Electric Lime Glow (#c3ff00)
-          letter.style.textShadow = `
-            0 0 ${6 * strength}px rgba(195,255,0,0.7),
-            0 0 ${16 * strength}px rgba(195,255,0,0.4)
-          `;
-
-          // Subtle Magnetic Movement
-          letter.style.transform = `
-            translate(${dx * -0.025 * strength}px, ${dy * -0.025 * strength}px)
-            scale(${1 + strength * 0.08})
-          `;
-          letter.style.color = "#ffffff"; // Brighter on hover
-        } else {
-          letter.style.opacity = 0.55;
-          letter.style.textShadow = "none";
-          letter.style.transform = "none";
-          letter.style.color = "#cfcfcf";
+        void main() {
+          vec2 uv = gl_FragCoord.xy / u_res;
+          float dist = distance(uv, u_mouse);
+          float glow = smoothstep(0.4, 0.0, dist);
+          glow += sin(u_time * 2.0) * 0.015; // flicker
+          
+          vec3 color = vec3(0.76 + glow * 0.1, 1.0, 0.0 + glow * 0.05);
+          gl_FragColor = vec4(color, glow * 0.25);
         }
-      });
+      `
+    });
+
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+    scene.add(mesh);
+
+    // --- MASKED TEXT LOGIC ---
+    const glowText = document.getElementById("glowText");
+    glowText.innerText = document.getElementById("baseText").innerText;
+
+    function animate(t) {
+      material.uniforms.u_time.value = t * 0.001;
+      material.uniforms.u_mouse.value.set(mouse.x, mouse.y);
+      renderer.render(scene, camera);
+
+      // Update Mask
+      const rect = glowText.getBoundingClientRect();
+      const relX = (mouse.x * window.innerWidth) - rect.left;
+      const relY = ((1 - mouse.y) * window.innerHeight) - rect.top;
+      
+      const mask = `radial-gradient(circle 180px at ${relX}px ${relY}px, white 0%, transparent 70%)`;
+      glowText.style.webkitMaskImage = mask;
+      glowText.style.maskImage = mask;
 
       requestAnimationFrame(animate);
     }
-
     animate();
+
+    window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      material.uniforms.u_res.value.set(window.innerWidth, window.innerHeight);
+    });
   </script>
 </body>
 </html>
