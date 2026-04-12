@@ -1,146 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" type="image/png" href="favicon-16x16.png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact — Athul Sidheeque</title>
-
+  <title>About — Athul Sidheeque</title>
   <style>
     body {
       margin: 0;
-      background: #0b0b0b; /* Slightly deeper black */
+      background: #0a0a0a;
       color: #ffffff;
       font-family: Arial, Helvetica, sans-serif;
-      overflow-x: hidden;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
     }
 
+    /* Keep your existing Nav style */
     nav {
       position: fixed;
-      top: 40px;
-      right: 50px;
+      top: 30px;
+      right: 40px;
       z-index: 1000;
     }
 
     nav a {
       color: #ffffff;
       text-decoration: none;
-      margin-left: 30px;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      opacity: 0.5;
-      transition: opacity 0.4s;
+      margin-left: 20px;
+      font-size: 14px;
+      opacity: 0.7;
+      transition: opacity 0.3s;
     }
 
     nav a:hover { opacity: 1; }
 
-    section { 
-      padding: 150px 8% 100px 8%; 
-      max-width: 1200px;
+    .text-container {
+      max-width: 800px;
+      padding: 40px;
+      font-size: 32px; /* Slightly larger for impact */
+      line-height: 1.4;
+      cursor: default;
+      user-select: none;
     }
 
-    /* MASSIVE TYPOGRAPHY */
-    h1 {
-      font-size: clamp(3rem, 10vw, 8rem); /* Scales with screen size */
-      line-height: 0.9;
-      margin-bottom: 60px;
-      letter-spacing: -2px;
-      font-weight: bold;
-    }
-
-    .contact-layout {
-      display: flex;
-      flex-direction: column;
-      gap: 100px;
-    }
-
-    /* FORM STYLING - Borderless & Raw */
-    .contact-form {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      max-width: 600px;
-    }
-
-    .contact-form input, 
-    .contact-form textarea {
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-      color: white;
-      padding: 25px 0;
-      font-family: inherit;
-      font-size: 18px;
-      outline: none;
-      transition: border-color 0.4s;
-    }
-
-    .contact-form input:focus, 
-    .contact-form textarea:focus {
-      border-bottom-color: #ffffff;
-    }
-
-    .contact-form button {
-      margin-top: 40px;
-      background: #ffffff;
-      color: #000;
-      border: none;
-      padding: 20px 40px;
-      width: fit-content;
-      cursor: pointer;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      font-size: 12px;
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .contact-form button:hover {
-      transform: scale(1.05);
-    }
-
-    /* MINI GRID FOR LINKS */
-    .link-grid {
-      display: flex;
-      gap: 60px;
-      flex-wrap: wrap;
-    }
-
-    .link-item {
-      text-decoration: none;
-      color: white;
-      transition: transform 0.3s;
-    }
-
-    .link-item span {
-      display: block;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      opacity: 0.4;
-      margin-bottom: 10px;
-    }
-
-    .link-item p {
-      margin: 0;
-      font-size: 24px;
-      font-weight: 500;
-    }
-
-    .link-item:hover {
-      transform: translateY(-5px);
-    }
-
-    @media (max-width: 600px) {
-      section { padding-top: 100px; }
-      h1 { font-size: 4rem; }
-      .link-grid { gap: 30px; }
-      .link-item p { font-size: 18px; }
+    .letter {
+      display: inline-block;
+      white-space: pre; /* Preserves spaces between words */
+      transition: 
+        transform 0.1s linear, 
+        color 0.2s ease, 
+        opacity 0.2s ease;
+      opacity: 0.25;
+      color: #555;
+      will-change: transform, opacity; /* Improves performance */
     }
   </style>
 </head>
-
 <body>
 
   <nav>
@@ -149,30 +66,68 @@
     <a href="contact.html">Contact</a>
   </nav>
 
-  <section>
-    <h1>Let's build<br>something real.</h1>
+  <div class="text-container" id="text">
+    I learned design the hard way through curiosity that wouldn’t rest, 
+    mistakes that wouldn’t be ignored, and iteration that wouldn’t stop.
+  </div>
 
-    <div class="contact-layout">
-      <form action="https://formspree.io/f/mlglypjz" method="POST" class="contact-form">
-        <input type="text" name="name" placeholder="Name" required>
-        <input type="email" name="email" placeholder="Email Address" required>
-        <textarea name="message" placeholder="Project details" required></textarea>
-        <button type="submit">Send Message</button>
-      </form>
+  <script>
+    const container = document.getElementById("text");
+    const textContent = container.innerText.trim();
+    container.innerHTML = "";
 
-      <div class="link-grid">
-        <a href="https://instagram.com/athul_sidiq" target="_blank" class="link-item">
-          <span>Instagram</span>
-          <p>@athul_sidiq</p>
-        </a>
+    // Split into letters and preserve spaces
+    [...textContent].forEach(char => {
+      const span = document.createElement("span");
+      span.classList.add("letter");
+      span.innerText = char;
+      container.appendChild(span);
+    });
 
-        <a href="https://www.linkedin.com/in/athul-sidiq/" target="_blank" class="link-item">
-          <span>LinkedIn</span>
-          <p>Professional</p>
-        </a>
-      </div>
-    </div>
-  </section>
+    const letters = document.querySelectorAll(".letter");
 
+    container.addEventListener("mousemove", (e) => {
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
+
+      letters.forEach(letter => {
+        const lRect = letter.getBoundingClientRect();
+        const lx = lRect.left + lRect.width / 2;
+        const ly = lRect.top + lRect.height / 2;
+
+        const dx = mouseX - lx;
+        const dy = mouseY - ly;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        const maxDist = 150; // Radius of effect
+
+        if (distance < maxDist) {
+          const strength = (maxDist - distance) / maxDist;
+
+          // Brightness & Color Shift
+          letter.style.opacity = 0.25 + (strength * 0.75);
+          letter.style.color = `hsl(${220 + strength * 40}, 100%, 80%)`; // Blue to Cyan shift
+
+          // Magnetic Movement & Scale
+          letter.style.transform = `
+            translate(${dx * -0.1 * strength}px, ${dy * -0.1 * strength}px)
+            scale(${1 + strength * 0.3})
+          `;
+        } else {
+          letter.style.opacity = 0.25;
+          letter.style.color = "#555";
+          letter.style.transform = "translate(0px, 0px) scale(1)";
+        }
+      });
+    });
+
+    container.addEventListener("mouseleave", () => {
+      letters.forEach(letter => {
+        letter.style.opacity = 0.25;
+        letter.style.color = "#555";
+        letter.style.transform = "translate(0px, 0px) scale(1)";
+      });
+    });
+  </script>
 </body>
 </html>
