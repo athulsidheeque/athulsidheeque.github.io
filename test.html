@@ -9,26 +9,14 @@
   <style>
     body {
       margin: 0;
-      background: #050505; 
-      color: #ffffff;
+      background: #050505;
+      color: #d0d0d0;
       font-family: Arial, Helvetica, sans-serif;
       height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-    }
-
-    /* The subtle background glow following the cursor */
-    #spotlight {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 1;
-      transition: background 0.05s linear; 
     }
 
     nav {
@@ -43,34 +31,47 @@
       text-decoration: none;
       margin-left: 20px;
       font-size: 14px;
-      opacity: 0.5;
+      opacity: 0.7;
       transition: opacity 0.3s;
     }
 
     nav a:hover { opacity: 1; }
 
+    /* Spotlight layer */
+    #spotlight {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Main Text Container */
     .text-container {
       position: relative;
       z-index: 2;
-      max-width: 900px;
+      max-width: 750px;
       padding: 40px;
-      font-size: 30px;
-      line-height: 1.6;
-      font-weight: bold;
+      font-size: 24px; 
+      line-height: 1.8;
+      font-weight: 500;
       cursor: default;
       user-select: none;
+      word-break: normal;
+      overflow-wrap: normal;
     }
 
     .letter {
       display: inline-block;
       white-space: pre;
-      transition: 
-        transform 0.1s linear, 
-        color 0.2s ease, 
-        opacity 0.2s ease,
-        text-shadow 0.2s ease;
-      opacity: 0.2;
-      color: #333;
+      transition:
+        transform 0.15s ease,
+        opacity 0.25s ease,
+        text-shadow 0.25s ease;
+      opacity: 0.55; 
+      color: #cfcfcf;
       will-change: transform, opacity, text-shadow;
     }
   </style>
@@ -93,8 +94,8 @@
     const container = document.getElementById("text");
     const spotlight = document.getElementById("spotlight");
     const textContent = container.innerText.trim();
-    
-    // Clear the container and rebuild it character by character
+
+    // Rebuild character by character
     container.innerHTML = "";
     [...textContent].forEach(char => {
       const span = document.createElement("span");
@@ -105,69 +106,78 @@
 
     const letters = document.querySelectorAll(".letter");
 
+    // Easing variables
+    let currentX = 0, currentY = 0;
+    let targetX = 0, targetY = 0;
+    let isInside = false;
+
+    // Track mouse status
     window.addEventListener("mousemove", (e) => {
-      const mouseX = e.clientX;
-      const mouseY = e.clientY;
+      targetX = e.clientX;
+      targetY = e.clientY;
+      isInside = true; // Global tracking for smoother entry
+    });
 
-      // 1. Update Global Spotlight (260px radius at 0.25 opacity)
-      spotlight.style.background = `
-        radial-gradient(
-          circle 260px at ${mouseX}px ${mouseY}px,
-          rgba(57, 255, 20, 0.25), 
-          transparent 70%
-        )
-      `;
+    document.addEventListener("mouseleave", () => {
+      isInside = false;
+      spotlight.style.background = "none";
+    });
 
-      // 2. Update Individual Letters within range
+    function animate() {
+      // Linear interpolation (lerp) for smooth following
+      currentX += (targetX - currentX) * 0.08;
+      currentY += (targetY - currentY) * 0.08;
+
+      if (isInside) {
+        spotlight.style.background = `
+          radial-gradient(
+            circle 240px at ${currentX}px ${currentY}px,
+            rgba(195,255,0,0.18),
+            transparent 70%
+          )
+        `;
+      }
+
       letters.forEach(letter => {
-        const lRect = letter.getBoundingClientRect();
-        const lx = lRect.left + lRect.width / 2;
-        const ly = lRect.top + lRect.height / 2;
+        const rect = letter.getBoundingClientRect();
+        const lx = rect.left + rect.width / 2;
+        const ly = rect.top + rect.height / 2;
 
-        const dx = mouseX - lx;
-        const dy = mouseY - ly;
+        const dx = currentX - lx;
+        const dy = currentY - ly;
         const distance = Math.sqrt(dx * dx + dy * dy);
-        const maxDist = 160;
 
-        if (distance < maxDist) {
+        const maxDist = 140;
+
+        if (distance < maxDist && isInside) {
           const strength = (maxDist - distance) / maxDist;
 
-          // Opacity and your custom RGB color transition
-          letter.style.opacity = 0.3 + (strength * 0.7);
-          letter.style.color = `rgb(${57 + strength * 50}, 255, ${20 + strength * 30})`;
+          letter.style.opacity = 0.55 + strength * 0.45;
 
-          // Triple-layered Neon Glow
+          // Electric Lime Glow (#c3ff00)
           letter.style.textShadow = `
-            0 0 ${6 * strength}px rgba(57,255,20,0.8),
-            0 0 ${12 * strength}px rgba(57,255,20,0.6),
-            0 0 ${20 * strength}px rgba(57,255,20,0.4)
+            0 0 ${6 * strength}px rgba(195,255,0,0.7),
+            0 0 ${16 * strength}px rgba(195,255,0,0.4)
           `;
 
-          // Subtle Magnetic Movement & Scale
+          // Subtle Magnetic Movement
           letter.style.transform = `
-            translate(${dx * -0.08 * strength}px, ${dy * -0.08 * strength}px)
-            scale(${1 + strength * 0.2})
+            translate(${dx * -0.025 * strength}px, ${dy * -0.025 * strength}px)
+            scale(${1 + strength * 0.08})
           `;
+          letter.style.color = "#ffffff"; // Brighter on hover
         } else {
-          // Reset to inactive state
-          letter.style.opacity = 0.2;
-          letter.style.color = "#333";
+          letter.style.opacity = 0.55;
           letter.style.textShadow = "none";
-          letter.style.transform = "translate(0px, 0px) scale(1)";
+          letter.style.transform = "none";
+          letter.style.color = "#cfcfcf";
         }
       });
-    });
 
-    // Reset when mouse leaves the viewport
-    document.addEventListener("mouseleave", () => {
-      spotlight.style.background = "none";
-      letters.forEach(letter => {
-        letter.style.opacity = 0.2;
-        letter.style.color = "#333";
-        letter.style.textShadow = "none";
-        letter.style.transform = "none";
-      });
-    });
+      requestAnimationFrame(animate);
+    }
+
+    animate();
   </script>
 </body>
 </html>
