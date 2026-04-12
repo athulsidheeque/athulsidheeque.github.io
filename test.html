@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="icon" type="image/png" href="favicon-16x16.png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About — Athul Sidheeque</title>
+
   <style>
     body {
       margin: 0;
@@ -17,6 +19,7 @@
       overflow: hidden;
     }
 
+    /* The subtle background glow following the cursor */
     #spotlight {
       position: fixed;
       top: 0;
@@ -49,9 +52,9 @@
     .text-container {
       position: relative;
       z-index: 2;
-      max-width: 900px; /* Widened to fit the longer text comfortably */
+      max-width: 900px;
       padding: 40px;
-      font-size: 30px; /* Balanced for the longer paragraph */
+      font-size: 30px;
       line-height: 1.6;
       font-weight: bold;
       cursor: default;
@@ -90,8 +93,9 @@
     const container = document.getElementById("text");
     const spotlight = document.getElementById("spotlight");
     const textContent = container.innerText.trim();
+    
+    // Clear the container and rebuild it character by character
     container.innerHTML = "";
-
     [...textContent].forEach(char => {
       const span = document.createElement("span");
       span.classList.add("letter");
@@ -105,7 +109,7 @@
       const mouseX = e.clientX;
       const mouseY = e.clientY;
 
-      // Global Spotlight: 260px at 0.25 opacity
+      // 1. Update Global Spotlight (260px radius at 0.25 opacity)
       spotlight.style.background = `
         radial-gradient(
           circle 260px at ${mouseX}px ${mouseY}px,
@@ -114,6 +118,7 @@
         )
       `;
 
+      // 2. Update Individual Letters within range
       letters.forEach(letter => {
         const lRect = letter.getBoundingClientRect();
         const lx = lRect.left + lRect.width / 2;
@@ -127,20 +132,24 @@
         if (distance < maxDist) {
           const strength = (maxDist - distance) / maxDist;
 
+          // Opacity and your custom RGB color transition
           letter.style.opacity = 0.3 + (strength * 0.7);
-          letter.style.color = `hsl(120, 100%, ${70 + strength * 15}%)`;
+          letter.style.color = `rgb(${57 + strength * 50}, 255, ${20 + strength * 30})`;
 
+          // Triple-layered Neon Glow
           letter.style.textShadow = `
             0 0 ${6 * strength}px rgba(57,255,20,0.8),
             0 0 ${12 * strength}px rgba(57,255,20,0.6),
             0 0 ${20 * strength}px rgba(57,255,20,0.4)
           `;
 
+          // Subtle Magnetic Movement & Scale
           letter.style.transform = `
             translate(${dx * -0.08 * strength}px, ${dy * -0.08 * strength}px)
             scale(${1 + strength * 0.2})
           `;
         } else {
+          // Reset to inactive state
           letter.style.opacity = 0.2;
           letter.style.color = "#333";
           letter.style.textShadow = "none";
@@ -149,6 +158,7 @@
       });
     });
 
+    // Reset when mouse leaves the viewport
     document.addEventListener("mouseleave", () => {
       spotlight.style.background = "none";
       letters.forEach(letter => {
