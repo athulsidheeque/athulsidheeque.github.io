@@ -5,19 +5,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Athul Sidheeque</title>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
-
   <style>
     body, html {
       margin: 0;
       padding: 0;
       background: #050505;
       color: white;
-      font-family: Arial, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       overflow: hidden;
     }
 
-    /* Film Grain Overlay */
+    /* Cinematic Film Grain */
     body::after {
       content: "";
       position: fixed;
@@ -32,47 +30,21 @@
       position: relative;
       height: 100vh;
       width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       overflow: hidden;
     }
 
-    /* Small name trigger */
     .hero-name {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 28px;
+      position: relative;
+      font-size: 24px;
       font-weight: 400;
-      letter-spacing: 0.02em;
-      z-index: 20;
-      cursor: crosshair;
-      transition: all 0.3s ease;
-      text-transform: lowercase;
-    }
-
-    /* Radial Circle effect */
-    .hover-circle {
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #f70202 50%, transparent 100%);
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0);
+      letter-spacing: 0.08em;
+      opacity: 0.85;
       z-index: 10;
-      transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
       pointer-events: none;
-    }
-
-    /* Active States */
-    #hero.active .hover-circle {
-      transform: translate(-50%, -50%) scale(1);
-    }
-
-    #hero.active .hero-name {
-      color: #000;
-      font-weight: 600;
+      text-transform: lowercase;
     }
 
     canvas {
@@ -86,107 +58,85 @@
 
   <section id="hero">
     <canvas id="particleCanvas"></canvas>
-    <div class="hover-circle" id="hoverCircle"></div>
-    <div class="hero-name" id="nameTrigger">athul sidheeque</div>
+    <div class="hero-name">athul sidheeque</div>
   </section>
 
   <script>
     const canvas = document.getElementById('particleCanvas');
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    const hero = document.getElementById('hero');
-    const nameTrigger = document.getElementById('nameTrigger');
-
-    let particles = [];
-    let mouse = { x: -1000, y: -1000, radius: 120 };
-    let isActive = false;
+    const ctx = canvas.getContext('2d');
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+
+    let particles = [];
+    let mouse = { x: -1000, y: -1000, radius: 120 };
 
     window.addEventListener('mousemove', (e) => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
     });
 
-    nameTrigger.addEventListener('mouseenter', () => {
-      isActive = true;
-      hero.classList.add('active');
-    });
-
-    nameTrigger.addEventListener('mouseleave', () => {
-      isActive = false;
-      hero.classList.remove('active');
-    });
-
     class Particle {
-      constructor(x, y) {
-        this.x = x + (Math.random() * 10 - 5);
-        this.y = y + (Math.random() * 10 - 5);
-        this.baseX = x;
-        this.baseY = y;
-        this.size = Math.random() * 2 + 0.5;
-        this.density = (Math.random() * 20) + 10;
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.3;
+        this.vy = (Math.random() - 0.5) * 0.3;
+        this.size = Math.random() * 1.8 + 0.5;
       }
 
       draw() {
-        // Spotlight Glow Logic
-        ctx.shadowBlur = isActive ? 0 : 8;
-        ctx.shadowColor = "rgba(255,255,255,0.2)";
-        
-        ctx.fillStyle = isActive 
-          ? 'rgba(0,0,0,0.95)' 
-          : 'rgba(255,255,255,0.7)';
-          
+        ctx.globalAlpha = 0.8;
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = "rgba(195,255,0,0.4)";
+
+        ctx.fillStyle = "rgba(195,255,0,0.8)";
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
       }
 
       update() {
+        // ✨ floating drift
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // 🔁 wrap around screen (infinite feel)
+        if (this.x < 0) this.x = canvas.width;
+        if (this.x > canvas.width) this.x = 0;
+        if (this.y < 0) this.y = canvas.height;
+        if (this.y > canvas.height) this.y = 0;
+
+        // 🧠 subtle mouse repulsion
         let dx = mouse.x - this.x;
         let dy = mouse.y - this.y;
         let distance = Math.sqrt(dx * dx + dy * dy);
-        
+
         if (distance < mouse.radius) {
           let force = (mouse.radius - distance) / mouse.radius;
-          let directionX = (dx / distance) * force * this.density;
-          let directionY = (dy / distance) * force * this.density;
-          this.x -= directionX;
-          this.y -= directionY;
-        } else {
-          this.x += (this.baseX - this.x) * 0.1;
-          this.y += (this.baseY - this.y) * 0.1;
+          this.x -= (dx / distance) * force * 2;
+          this.y -= (dy / distance) * force * 2;
         }
       }
     }
 
     function init() {
       particles = [];
-      ctx.fillStyle = 'white';
-      ctx.font = '900 18vw "Archivo Black"';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('ATHUL', canvas.width / 2, canvas.height / 2);
-      
-      const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const particleCount = 120; // Lower count = higher premium feel
 
-      for (let y = 0; y < canvas.height; y += 5) {
-        for (let x = 0; x < canvas.width; x += 5) {
-          const index = (y * canvas.width + x) * 4;
-          if (pixels[index + 3] > 128) {
-            particles.push(new Particle(x, y));
-          }
-        }
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
       }
     }
 
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = 0; i < particles.length; i++) {
-        particles[i].draw();
-        particles[i].update();
-      }
+
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+
       requestAnimationFrame(animate);
     }
 
