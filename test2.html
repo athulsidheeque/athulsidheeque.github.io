@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" type="image/png" href="favicon-16x16.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Athul Sidheeque</title>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
-
     <style>
         :root {
             --accent-red: #f70202;
-            --lime-glow: #c3ff00;
+            --accent-green: #c3ff00;
         }
 
         body {
@@ -19,21 +17,9 @@
             font-family: Arial, Helvetica, sans-serif;
             color: #ffffff;
             overflow-x: hidden;
-            overflow-y: scroll; /* Forces scrollbar to prevent layout shift */
         }
 
-        /* FILM GRAIN Overlay */
-        body::after {
-            content: "";
-            position: fixed;
-            inset: 0;
-            background: url('https://grainy-gradients.vercel.app/noise.svg');
-            opacity: 0.05;
-            pointer-events: none;
-            z-index: 10000;
-        }
-
-        /* VERTICAL SCROLLING NAV (Ref. 3, V4 Alignment) */
+        /* 3. ROLLING NAV (Centered & Tighter) */
         nav {
             position: fixed;
             top: 40px;
@@ -41,379 +27,201 @@
             z-index: 1000;
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
-            gap: 12px; /* Tighter line spacing */
+            align-items: center; /* Centered within the space */
+            gap: 8px; /* Decreased line spacing */
+        }
+
+        .nav-item {
+            height: 18px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            text-align: center;
         }
 
         .nav-link {
-            position: relative;
+            display: block;
+            font-size: 13px; /* Decreased font size */
+            font-weight: 600;
+            line-height: 18px;
             color: #fff;
             text-decoration: none;
-            font-size: 13px; /* Smaller as requested */
-            font-weight: 500;
-            opacity: 0.5;
-            letter-spacing: 0.1em;
-            transition: opacity 0.3s;
-            overflow: hidden;
+            text-transform: uppercase;
+            transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+        }
+
+        /* Rolling Effect */
+        .nav-item:hover .nav-link {
+            transform: translateY(-100%);
+        }
+
+        .nav-item::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 18px;
+            text-transform: uppercase;
+            color: var(--accent-red);
+            transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+        }
+
+        .nav-item:hover::after {
+            transform: translateY(-100%);
+        }
+
+        /* 1. HERO REVEAL (Dual Color) */
+        .hero {
+            height: 100vh;
             display: flex;
-            height: 18px; /* Fixed height for scrolling math */
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .hero-container {
+            position: relative;
+            cursor: none;
+        }
+
+        .hero-text {
+            font-size: 10vw;
+            line-height: 0.9;
+            font-weight: 500;
+            text-transform: lowercase;
+            margin: 0;
+            color: #fff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .reveal-circle {
+            position: fixed;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            z-index: 2;
+            mix-blend-mode: difference; /* This handles the black text effect */
+            background-color: white; /* Base */
+        }
+
+        .hero-container:hover .reveal-circle {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* 2. SOUND TOGGLE (Side-by-Side) */
+        .sound-ui {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            gap: 8px;
             align-items: center;
         }
-        .nav-link:hover { opacity: 1; }
 
-        /* The Scrolling "WORK" Animation */
-        .scrolling-link::after {
-            content: "workworkwork";
-            position: absolute;
-            top: 0;
-            left: 0;
-            color: #000;
-            background: var(--accent-red);
-            padding: 0 4px;
-            text-transform: lowercase;
-            font-family: 'Archivo Black', Impact, sans-serif;
-            font-weight: 900;
-            transform: translateY(100%);
-            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        #sound-state {
+            font-weight: bold;
+            transition: color 0.3s;
         }
-        .scrolling-link:hover::after {
-            animation: scrollTextWheel 1s linear infinite;
-        }
+        #sound-state.on { color: var(--accent-green); }
+        #sound-state.off { color: var(--accent-red); }
 
-        @keyframes scrollTextWheel {
-            0% { transform: translateY(0%); }
-            100% { transform: translateY(-66.6%); } /* Scrolls through two full words */
-        }
-
-        /* SOCIALS (Keeping social links intact) */
+        /* Socials (Corrected alignment) */
         .socials {
             position: fixed;
             left: 30px;
             bottom: 30px;
-            z-index: 1000;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 15px;
         }
 
-        .social-item {
-            position: relative;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .reveal {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            background: var(--accent-red);
-            border-radius: 50%;
-            transform: scale(0);
-            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-
-        .icon {
-            width: 20px;
-            height: 20px;
+        .social-icon {
+            width: 24px;
             fill: #666;
-            z-index: 2;
             transition: fill 0.3s;
         }
+        .social-icon:hover { fill: var(--accent-red); }
 
-        .social-item:hover .reveal { transform: scale(1); }
-        .social-item:hover .icon { fill: #000; }
-
-        /* 2, 5, 7. SOUND TOGGLE (Vertical, Bottom Right, Color states) */
-        .sound-wrapper {
-            position: fixed;
-            right: 30px; /* Fixed Bottom Right Corner */
-            bottom: 30px;
-            font-size: 11px;
-            letter-spacing: 0.3em;
-            cursor: pointer;
-            z-index: 1000;
-            opacity: 0.6;
-            transition: opacity 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            
-            /* Rotated vertical layout */
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-        }
-        .sound-wrapper:hover { opacity: 1; }
-        
-        /* Fixed 'SOUND' text */
-        .sound-text { 
-            color: rgba(255,255,255,0.6); 
-        }
-
-        /* Toggle State span */
-        #sound-state { 
-            font-weight: bold; 
-            margin-top: 10px; /* Separator when vertical */
-            transition: color 0.3s ease;
-        }
-        #sound-state.on { color: var(--lime-glow); } /* ON is Green */
-        #sound-state.off { color: var(--accent-red); } /* OFF is Red */
-
-        /* 1. HERO (Lerped Magnetics & Inversion Mask) */
-        .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        /* Container allows for lerped magnetic shift */
-        .hero-title-container {
-            pointer-events: none;
-            position: relative;
-            text-align: center;
-        }
-
-        .hero-title {
-            font-size: 11vw;
-            line-height: 0.85;
-            font-weight: 500;
-            letter-spacing: -0.04em;
-            text-transform: lowercase;
-            color: #eaeaea;
-            margin: 0;
-            transition: opacity 0.1s ease-out; /* Parallax fade logic */
-        }
-
-        /* Top layer (Red) revealed by mask */
-        .hero-title-top {
-            position: absolute;
-            inset: 0;
-            color: var(--accent-red);
-            font-family: 'Archivo Black', Impact, sans-serif; /* Brutalist on hover */
-            font-weight: 900;
-            
-            /* Initial masked state */
-            -webkit-mask-image: radial-gradient(circle 0px at 0 0, white, transparent);
-            mask-image: radial-gradient(circle 0px at 0 0, white, transparent);
-        }
-
-        /* 4. ABOUT (Mobil Responsive Text Layout) */
-        .about {
-            min-height: 80vh; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding-bottom: 100px;
-        }
-
-        .text-wrapper {
-            position: relative;
-            max-width: 1000px; /* Wider to fill negative space on desktop */
-            padding: 40px;
-            width: 100%;
-        }
-
-        .text {
-            font-size: 32px; /* Large cinematic size on desktop */
-            line-height: 1.6;
-            font-weight: 500;
-            user-select: none;
-        }
-
-        .base { color: #222; }
-
-        .glow {
-            position: absolute;
-            inset: 40px; /* Matches wrapper padding */
-            color: var(--lime-glow);
-            pointer-events: none;
-            -webkit-mask-image: radial-gradient(circle 0px at 0 0, white, transparent);
-            mask-image: radial-gradient(circle 0px at 0 0, white, transparent);
-            text-shadow: 0 0 10px rgba(195,255,0,0.7), 0 0 25px rgba(195,255,0,0.3);
-        }
-
-        .glow .highlight {
-            color: var(--accent-red);
-            text-shadow: 0 0 10px rgba(247, 2, 2, 0.6);
-        }
-
-        /* 4. RESPONSIVE DESIGN */
-        @media (max-width: 1024px) {
-            .text { font-size: 26px; }
-            .hero-title { font-size: 14vw; }
-        }
-
-        @media (max-width: 768px) {
-            .text { font-size: 22px; line-height: 1.8; }
-            .text-wrapper { padding: 20px; }
-            .glow { inset: 20px; }
-            .hero-title { font-size: 16vw; }
-
-            /* Re-orient Nav for Mobile */
-            nav {
-                top: auto;
-                bottom: 20px;
-                right: 20px;
-                left: 20px;
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-                gap: 0;
-            }
-            nav a { margin-bottom: 0; font-size: 11px; }
-            .sound-wrapper, .socials { display: none; } /* Hide fixed UI on phones */
-        }
     </style>
 </head>
-
 <body>
 
-<nav>
-    <a href="#" class="nav-link">ABOUT</a>
-    <a href="#" class="nav-link scrolling-link">WORK</a>
-    <a href="#" class="nav-link">CONTACT</a>
-</nav>
+    <nav>
+        <div class="nav-item" data-text="About"><a href="#" class="nav-link">About</a></div>
+        <div class="nav-item" data-text="Work"><a href="#" class="nav-link">Work</a></div>
+        <div class="nav-item" data-text="Contact"><a href="#" class="nav-link">Contact</a></div>
+    </nav>
 
-<div class="socials">
-    <a href="https://www.instagram.com/athul_sidiq" target="_blank" class="social-item">
-        <div class="reveal"></div>
-        <svg class="icon" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.058-1.69-.072-4.949-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-    </a>
-    <a href="https://www.linkedin.com/in/athul-sidiq/" target="_blank" class="social-item">
-        <div class="reveal"></div>
-        <svg class="icon" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-    </a>
-    <a href="https://www.youtube.com/@athul_sidiq" target="_blank" class="social-item">
-        <div class="reveal"></div>
-        <svg class="icon" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
-    </a>
-</div>
-
-<div class="sound-wrapper" id="soundToggle">
-    <span class="sound-text">SOUND</span>
-    <span id="sound-state" class="on">ON</span>
-</div>
-
-<section class="hero">
-    <div class="hero-title-container" id="magneticHero">
-        <h1 class="hero-title">athul<br>sidheeque</h1>
-        <h1 class="hero-title hero-title-top" id="heroTitleRed">athul<br>sidheeque</h1>
+    <div class="sound-ui" id="soundToggle">
+        <span>SOUND</span>
+        <span id="sound-state" class="off">OFF</span>
     </div>
-</section>
 
-<section class="about">
-    <div class="text-wrapper" id="wrapper">
-        <div class="text base" id="baseText">
-            I spend my days <span class="highlight">(and a lot of my nights)</span> exploring stories through my passion to create. I love the journey of becoming better, taking what I learn and turning it into something special. Nothing matters as much as the <span class="highlight">soul</span> of the project. From the first time I picked up a camera to learning the complexities, it’s all been about that one spark: the <span class="highlight">drive to capture</span> and <span class="highlight">deliver a feeling.</span> I don’t think I’ll ever stop being a student of the craft; there’s always a new way to see things.
+    <section class="hero">
+        <div class="hero-container" id="heroArea">
+            <div class="reveal-circle" id="cursorCircle"></div>
+            <h1 class="hero-text">
+                <span id="name-athul">athul</span><br>
+                <span id="name-sidheeque">sidheeque</span>
+            </h1>
         </div>
-        <div class="text glow" id="glowText"></div>
-    </div>
-</section>
+    </section>
 
-<script>
-// Global mouse state
-let mouse = { x: 0, y: 0 };
-window.addEventListener("mousemove", (e) => {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-});
+    <audio id="bgAudio" loop>
+        <source src="https://raw.githubusercontent.com/athulsidheeque/athulsidheeque.github.io/74a392a75b583daf072494b303fc376a161a9521/web%20audio.mp3" type="audio/mpeg">
+    </audio>
 
-// 1. MAGNETIC HERO & INVERSION PHYSICS (V5 - Smooth Lerp Fix)
-const heroContainer = document.getElementById('magneticHero');
-const heroTitleRed = document.getElementById('heroTitleRed');
-let heroX = 0, heroY = 0; // LERP positions (Smooth damping)
+    <script>
+        const circle = document.getElementById('cursorCircle');
+        const heroArea = document.getElementById('heroArea');
+        const athul = document.getElementById('name-athul');
+        const sidheeque = document.getElementById('name-sidheeque');
 
-function heroPhysicsLoop() {
-    // 10% Lerp damping (current + (target - current) * friction)
-    heroX += (mouse.x - window.innerWidth / 2 - heroX) * 0.1;
-    heroY += (mouse.y - window.innerHeight / 2 - heroY) * 0.1;
+        // Hero Reveal Color Logic
+        document.addEventListener('mousemove', (e) => {
+            circle.style.left = e.clientX + 'px';
+            circle.style.top = e.clientY + 'px';
+            
+            const rectAthul = athul.getBoundingClientRect();
+            const rectSid = sidheeque.getBoundingClientRect();
 
-    // Apply smooth shift to the container (0.02 scaling multiplier for subtle effect)
-    heroContainer.style.transform = `translate(${heroX * 0.02}px, ${heroY * 0.02}px)`;
+            // Check which name the cursor is closer to
+            if (e.clientY < rectSid.top) {
+                circle.style.backgroundColor = '#f70202'; // Red for Athul
+            } else {
+                circle.style.backgroundColor = '#c3ff00'; // Green for Sidheeque
+            }
+        });
 
-    // Apply the Red Inversion Mask to the top layer
-    const heroRect = heroTitleRed.getBoundingClientRect();
-    const relX = mouse.x - heroRect.left;
-    const relY = mouse.y - heroRect.top;
+        // Sound Logic
+        const soundToggle = document.getElementById('soundToggle');
+        const soundState = document.getElementById('sound-state');
+        const audio = document.getElementById('bgAudio');
+        let playing = false;
 
-    heroTitleRed.style.webkitMaskImage = `radial-gradient(circle 200px at ${relX}px ${relY}px, white, transparent)`;
-    
-    requestAnimationFrame(heroPhysicsLoop);
-}
-heroPhysicsLoop();
-
-// 1. HERO PARALLAX ON SCROLL
-window.addEventListener("scroll", () => {
-    const y = window.scrollY;
-    // Parallax shift the base text itself (container has physics)
-    document.querySelectorAll(".hero-title").forEach(el => {
-        el.style.transform = `translateY(${y * 0.3}px)`;
-        el.style.opacity = 1 - y / 700;
-    });
-});
-
-// 4. GLOW TEXT PHYSICS (Inherits global lerp)
-const baseText = document.getElementById("baseText");
-const glowText = document.getElementById("glowText");
-glowText.innerHTML = baseText.innerHTML;
-
-// Local lerp positions for the local about text bounding box
-let glowX = 0, glowY = 0;
-
-function glowPhysicsLoop() {
-    // Separate local lerp logic so the mask alignment stays perfect relative to its container
-    glowX += (mouse.x - glowX) * 0.1;
-    glowY += (mouse.y - glowY) * 0.1;
-
-    const r = glowText.getBoundingClientRect();
-    const maskX = glowX - r.left;
-    const maskY = glowY - r.top;
-
-    glowText.style.webkitMaskImage = `radial-gradient(circle 180px at ${maskX}px ${maskY}px, white 0%, transparent 70%)`;
-    requestAnimationFrame(glowPhysicsLoop);
-}
-glowPhysicsLoop();
-
-// 3. MAGNETIC SOCIALS (Keeping logic consistent)
-document.querySelectorAll(".social-item").forEach(item => {
-    item.addEventListener("mousemove", e => {
-        const rect = item.getBoundingClientRect();
-        const dx = e.clientX - rect.left - rect.width / 2;
-        const dy = e.clientY - rect.top - rect.height / 2;
-        item.querySelector(".icon").style.transform = `translate(${dx * 0.4}px, ${dy * 0.4}px)`;
-        item.querySelector(".reveal").style.transform = `translate(${dx * 0.2}px, ${dy * 0.2}px) scale(1)`;
-    });
-    item.addEventListener("mouseleave", () => {
-        item.querySelector(".icon").style.transform = "translate(0,0)";
-        item.querySelector(".reveal").style.transform = "scale(0)";
-    });
-});
-
-// 2, 7. SOUND TOGGLE & ISOLATION
-const soundToggle = document.getElementById('soundToggle');
-const soundStateSpan = document.getElementById('sound-state');
-let isSoundOn = true;
-
-soundToggle.addEventListener('click', () => {
-    isSoundOn = !isSoundOn;
-    
-    // Toggle Text content (SOUND text does not move)
-    soundStateSpan.innerText = isSoundOn ? "ON" : "OFF";
-    
-    // Toggle color classes
-    soundStateSpan.classList.toggle('on');
-    soundStateSpan.classList.toggle('off');
-    
-    // Future SFX control logic goes here
-});
-</script>
-
+        soundToggle.addEventListener('click', () => {
+            if (!playing) {
+                audio.play();
+                soundState.innerText = "ON";
+                soundState.className = "on";
+            } else {
+                audio.pause();
+                soundState.innerText = "OFF";
+                soundState.className = "off";
+            }
+            playing = !playing;
+        });
+    </script>
 </body>
 </html>
