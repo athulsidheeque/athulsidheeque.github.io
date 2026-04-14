@@ -22,7 +22,7 @@
             overflow-y: scroll; /* Forces scrollbar to prevent layout shift */
         }
 
-        /* FILM GRAIN - Fixed z-index to stay on top */
+        /* FILM GRAIN Overlay */
         body::after {
             content: "";
             position: fixed;
@@ -33,7 +33,7 @@
             z-index: 10000;
         }
 
-        /* 3. VERTICAL SCROLLING NAV */
+        /* VERTICAL SCROLLING NAV (Ref. 3, V4 Alignment) */
         nav {
             position: fixed;
             top: 40px;
@@ -42,21 +42,21 @@
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            gap: 12px;
+            gap: 12px; /* Tighter line spacing */
         }
 
         .nav-link {
             position: relative;
             color: #fff;
             text-decoration: none;
-            font-size: 13px; /* Smaller & Tighter as requested */
+            font-size: 13px; /* Smaller as requested */
             font-weight: 500;
             opacity: 0.5;
             letter-spacing: 0.1em;
             transition: opacity 0.3s;
             overflow: hidden;
             display: flex;
-            height: 18px;
+            height: 18px; /* Fixed height for scrolling math */
             align-items: center;
         }
         .nav-link:hover { opacity: 1; }
@@ -85,7 +85,7 @@
             100% { transform: translateY(-66.6%); } /* Scrolls through two full words */
         }
 
-        /* SOCIALS (Keeping your social links intact) */
+        /* SOCIALS (Keeping social links intact) */
         .socials {
             position: fixed;
             left: 30px;
@@ -128,10 +128,10 @@
         .social-item:hover .reveal { transform: scale(1); }
         .social-item:hover .icon { fill: #000; }
 
-        /* 2. SOUND TOGGLE (Vertical, Fixed Right) */
+        /* 2, 5, 7. SOUND TOGGLE (Vertical, Bottom Right, Color states) */
         .sound-wrapper {
             position: fixed;
-            right: 30px;
+            right: 30px; /* Fixed Bottom Right Corner */
             bottom: 30px;
             font-size: 11px;
             letter-spacing: 0.3em;
@@ -142,21 +142,28 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            
+            /* Rotated vertical layout */
             writing-mode: vertical-rl;
             text-orientation: mixed;
         }
         .sound-wrapper:hover { opacity: 1; }
         
-        /* Only the state span toggles color and content */
+        /* Fixed 'SOUND' text */
+        .sound-text { 
+            color: rgba(255,255,255,0.6); 
+        }
+
+        /* Toggle State span */
         #sound-state { 
             font-weight: bold; 
-            color: #fff; /* White base, JavaScript toggles color */
-            margin-top: 10px;
+            margin-top: 10px; /* Separator when vertical */
             transition: color 0.3s ease;
         }
-        #sound-state.active { color: var(--accent-red); }
+        #sound-state.on { color: var(--lime-glow); } /* ON is Green */
+        #sound-state.off { color: var(--accent-red); } /* OFF is Red */
 
-        /* 1. HERO (Magnetic Inversion) */
+        /* 1. HERO (Lerped Magnetics & Inversion Mask) */
         .hero {
             height: 100vh;
             display: flex;
@@ -166,7 +173,7 @@
             position: relative;
         }
 
-        /* Container allows for magnetic shift */
+        /* Container allows for lerped magnetic shift */
         .hero-title-container {
             pointer-events: none;
             position: relative;
@@ -181,7 +188,7 @@
             text-transform: lowercase;
             color: #eaeaea;
             margin: 0;
-            transition: transform 0.1s ease-out, opacity 0.1s ease-out; /* Slow lerp fallback */
+            transition: opacity 0.1s ease-out; /* Parallax fade logic */
         }
 
         /* Top layer (Red) revealed by mask */
@@ -189,7 +196,7 @@
             position: absolute;
             inset: 0;
             color: var(--accent-red);
-            font-family: 'Archivo Black', Impact, sans-serif; /* Brutalist font on hover */
+            font-family: 'Archivo Black', Impact, sans-serif; /* Brutalist on hover */
             font-weight: 900;
             
             /* Initial masked state */
@@ -197,7 +204,7 @@
             mask-image: radial-gradient(circle 0px at 0 0, white, transparent);
         }
 
-        /* 4. ABOUT (Mobile Responsive Text Layout) */
+        /* 4. ABOUT (Mobil Responsive Text Layout) */
         .about {
             min-height: 80vh; 
             display: flex;
@@ -208,7 +215,7 @@
 
         .text-wrapper {
             position: relative;
-            max-width: 1000px; /* Wider to fill space on desktop */
+            max-width: 1000px; /* Wider to fill negative space on desktop */
             padding: 40px;
             width: 100%;
         }
@@ -290,7 +297,8 @@
 </div>
 
 <div class="sound-wrapper" id="soundToggle">
-    SOUND <span id="sound-state" class="active">ON</span>
+    <span class="sound-text">SOUND</span>
+    <span id="sound-state" class="on">ON</span>
 </div>
 
 <section class="hero">
@@ -317,10 +325,10 @@ window.addEventListener("mousemove", (e) => {
     mouse.y = e.clientY;
 });
 
-// 1. MAGNETIC HERO & INVERSION PHYSICS
+// 1. MAGNETIC HERO & INVERSION PHYSICS (V5 - Smooth Lerp Fix)
 const heroContainer = document.getElementById('magneticHero');
 const heroTitleRed = document.getElementById('heroTitleRed');
-let heroX = 0, heroY = 0; // LERP positions
+let heroX = 0, heroY = 0; // LERP positions (Smooth damping)
 
 function heroPhysicsLoop() {
     // 10% Lerp damping (current + (target - current) * friction)
@@ -388,15 +396,21 @@ document.querySelectorAll(".social-item").forEach(item => {
     });
 });
 
-// 2. SOUND TOGGLE & ISOLATION
+// 2, 7. SOUND TOGGLE & ISOLATION
 const soundToggle = document.getElementById('soundToggle');
 const soundStateSpan = document.getElementById('sound-state');
 let isSoundOn = true;
 
 soundToggle.addEventListener('click', () => {
     isSoundOn = !isSoundOn;
+    
+    // Toggle Text content (SOUND text does not move)
     soundStateSpan.innerText = isSoundOn ? "ON" : "OFF";
-    soundStateSpan.classList.toggle('active');
+    
+    // Toggle color classes
+    soundStateSpan.classList.toggle('on');
+    soundStateSpan.classList.toggle('off');
+    
     // Future SFX control logic goes here
 });
 </script>
