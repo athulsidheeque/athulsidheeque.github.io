@@ -1,244 +1,240 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Athul Sidheeque</title>
+  <link rel="icon" type="image/png" href="favicon-16x16.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Athul Sidheeque</title>
 
-<style>
-:root {
-  --bg: #050505;
-  --text: #eaeaea;
-  --muted: #777;
-  --accent: #c3ff00;
-  --red: #f70202;
-}
+  <style>
+    /* 1. RESET & BASE */
+    body {
+      margin: 0;
+      background: #050505;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #ffffff;
+      overflow-x: hidden; /* Changed from overflow: hidden to allow scrolling */
+    }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+    /* Cinematic Film Grain Overlay */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: url('https://grainy-gradients.vercel.app/noise.svg');
+      opacity: 0.05;
+      pointer-events: none;
+      z-index: 2000;
+    }
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: Arial, Helvetica, sans-serif;
-  overflow-x: hidden;
-}
+    /* 2. FIXED UI ELEMENTS */
+    nav {
+      position: fixed;
+      top: 30px;
+      right: 40px;
+      z-index: 1000;
+    }
 
-/* FILM GRAIN */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: url('https://grainy-gradients.vercel.app/noise.svg');
-  opacity: 0.05;
-  pointer-events: none;
-  z-index: 999;
-}
+    nav a {
+      color: #ffffff;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 14px;
+      opacity: 0.5;
+      transition: opacity 0.3s;
+    }
 
-/* NAV TOP RIGHT */
-nav {
-  position: fixed;
-  top: 30px;
-  right: 40px;
-  z-index: 1000;
-}
+    nav a:hover { opacity: 1; }
 
-nav a {
-  display: block;
-  text-decoration: none;
-  color: white;
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  margin-bottom: 10px;
-  opacity: 0.6;
-  transition: 0.3s;
-}
+    .socials {
+      position: fixed;
+      left: 30px;
+      bottom: 30px;
+      z-index: 1000;
+    }
 
-nav a:hover {
-  opacity: 1;
-}
+    .socials div {
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      border-radius: 50%;
+      margin-bottom: 14px;
+      opacity: 0.8;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .socials div:hover { transform: scale(1.3); }
 
-/* HERO */
-#hero {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding-left: 10vw;
-  position: relative;
-}
+    .sound {
+      position: fixed;
+      right: 30px;
+      bottom: 30px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      opacity: 0.6;
+      z-index: 1000;
+    }
 
-/* BIG NAME */
-.hero-title {
-  font-size: 9vw;
-  font-weight: 500;
-  line-height: 0.9;
-  letter-spacing: -0.03em;
-}
+    /* 3. HERO SECTION */
+    .hero {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 10;
+    }
 
-/* SOCIAL LEFT */
-.social {
-  position: fixed;
-  bottom: 40px;
-  left: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  z-index: 1000;
-}
+    .hero-title {
+      font-size: 10vw;
+      line-height: 0.9;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      text-align: center;
+      color: #eaeaea;
+      text-transform: lowercase;
+    }
 
-.dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #eaeaea;
-  opacity: 0.8;
-  transition: 0.3s;
-  cursor: pointer;
-}
+    /* 4. ABOUT SECTION */
+    .about {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #050505;
+      position: relative;
+      z-index: 20;
+    }
 
-.dot:hover {
-  transform: scale(1.4);
-  opacity: 1;
-}
+    .text-wrapper {
+      position: relative;
+      max-width: 750px;
+      padding: 40px;
+    }
 
-/* SOUND RIGHT */
-.sound {
-  position: fixed;
-  right: 30px;
-  bottom: 50%;
-  transform: translateY(50%) rotate(-90deg);
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  opacity: 0.6;
-}
+    .text {
+      font-size: 24px;
+      line-height: 1.8;
+      font-weight: 500;
+      user-select: none;
+    }
 
-/* SECOND SECTION */
-#about {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 100px 20px;
-}
+    .base {
+      color: #333333;
+    }
 
-/* TEXT */
-.text-wrapper {
-  position: relative;
-  max-width: 750px;
-}
+    /* Glow Layer (Green) */
+    .glow {
+      position: absolute;
+      top: 40px;
+      left: 40px;
+      right: 40px;
+      color: #c3ff00;
+      pointer-events: none;
+      -webkit-mask-image: radial-gradient(circle 0px at 0 0, white, transparent);
+      mask-image: radial-gradient(circle 0px at 0 0, white, transparent);
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      text-shadow: 0 0 8px rgba(195,255,0,0.7), 0 0 24px rgba(195,255,0,0.4);
+    }
 
-.text {
-  font-size: 24px;
-  line-height: 1.8;
-  font-weight: 500;
-}
+    .glow .highlight {
+      color: #f70202;
+      text-shadow: 0 0 8px rgba(247, 2, 2, 0.8), 0 0 24px rgba(247, 2, 2, 0.5);
+    }
 
-.base {
-  color: #444;
-}
-
-/* GLOW LAYER */
-.glow {
-  position: absolute;
-  inset: 0;
-  color: var(--accent);
-  pointer-events: none;
-
-  -webkit-mask-image: radial-gradient(circle 0px at 0 0, white, transparent);
-  mask-image: radial-gradient(circle 0px at 0 0, white, transparent);
-
-  text-shadow:
-    0 0 10px rgba(195,255,0,0.8),
-    0 0 30px rgba(195,255,0,0.5);
-}
-
-/* RED HIGHLIGHT */
-.glow .highlight {
-  color: var(--red);
-  text-shadow:
-    0 0 10px rgba(247,2,2,0.9),
-    0 0 25px rgba(247,2,2,0.5);
-}
-
-</style>
+    .highlight {
+        transition: color 0.3s ease;
+    }
+  </style>
 </head>
-
 <body>
 
-<!-- NAV -->
-<nav>
-  <a href="#">ABOUT</a>
-  <a href="#">WORK</a>
-  <a href="#">CONTACT</a>
-</nav>
+  <nav>
+    <a href="#">About</a>
+    <a href="#">Works</a>
+    <a href="#">Contact</a>
+  </nav>
 
-<!-- SOCIAL -->
-<div class="social">
-  <div class="dot"></div>
-  <div class="dot"></div>
-  <div class="dot"></div>
-</div>
-
-<!-- SOUND -->
-<div class="sound">SOUND ON</div>
-
-<!-- HERO -->
-<section id="hero">
-  <div class="hero-title">
-    athul<br>sidheeque
+  <div class="socials">
+    <div></div>
+    <div></div>
+    <div></div>
   </div>
-</section>
 
-<!-- ABOUT SECTION -->
-<section id="about">
-  <div class="text-wrapper" id="wrapper">
-    
-    <div class="text base" id="baseText">
-      I spend my days <span class="highlight">(and a lot of my nights)</span> exploring stories through my passion to create. I love the journey of becoming better, taking what I learn and turning it into something special. Nothing matters as much as the <span class="highlight">soul</span> of the project. From the first time I picked up a camera to learning the complexities, it’s all been about that one spark: the <span class="highlight">drive to capture</span> and <span class="highlight">deliver a feeling.</span>
+  <div class="sound">SOUND ON</div>
+
+  <section class="hero">
+    <h1 class="hero-title">
+      <span>athul</span><br>
+      <span>sidheeque</span>
+    </h1>
+  </section>
+
+  <section class="about">
+    <div class="text-wrapper" id="wrapper">
+      <div class="text base" id="baseText">
+        I spend my days <span class="highlight">(and a lot of my nights)</span> exploring stories through my passion to create. I love the journey of becoming better, taking what I learn and turning it into something special. Nothing matters as much as the <span class="highlight">soul</span> of the project. From the first time I picked up a camera to learning the complexities, it’s all been about that one spark: the <span class="highlight">drive to capture</span> and <span class="highlight">deliver a feeling.</span> I don’t think I’ll ever stop being a student of the craft; there’s always a new way to see things.
+      </div>
+      <div class="text glow" id="glowText"></div>
     </div>
+  </section>
 
-    <div class="text glow" id="glowText"></div>
+  <script>
+    // --- Scroll Parallax Logic ---
+    window.addEventListener("scroll", () => {
+      const scrollY = window.scrollY;
+      const hero = document.querySelector(".hero-title");
+      if (hero) {
+        hero.style.transform = `translateY(${scrollY * 0.3}px)`;
+        hero.style.opacity = 1 - (scrollY / 600);
+      }
+    });
 
-  </div>
-</section>
+    // --- Interactive Glow Logic ---
+    const baseText = document.getElementById("baseText");
+    const glowText = document.getElementById("glowText");
+    glowText.innerHTML = baseText.innerHTML;
 
-<script>
+    let currentX = 0, currentY = 0;
+    let targetX = 0, targetY = 0;
+    let isInside = false;
 
-/* COPY TEXT */
-const baseText = document.getElementById("baseText");
-const glowText = document.getElementById("glowText");
-glowText.innerHTML = baseText.innerHTML;
+    window.addEventListener("mousemove", (e) => {
+      targetX = e.clientX;
+      targetY = e.clientY;
+      isInside = true;
+    });
 
-/* MOUSE GLOW */
-let currentX = 0, currentY = 0;
-let targetX = 0, targetY = 0;
+    document.addEventListener("mouseleave", () => {
+      isInside = false;
+    });
 
-window.addEventListener("mousemove", e => {
-  targetX = e.clientX;
-  targetY = e.clientY;
-});
+    function animate() {
+      currentX += (targetX - currentX) * 0.1;
+      currentY += (targetY - currentY) * 0.1;
 
-function animate() {
-  currentX += (targetX - currentX) * 0.08;
-  currentY += (targetY - currentY) * 0.08;
+      if (isInside) {
+        const rect = glowText.getBoundingClientRect();
+        const relX = currentX - rect.left;
+        const relY = currentY - rect.top;
 
-  const rect = glowText.getBoundingClientRect();
-  const x = currentX - rect.left;
-  const y = currentY - rect.top;
+        // Ensure the mask follows scroll as well
+        const maskStyle = `radial-gradient(circle 180px at ${relX}px ${relY}px, white 0%, transparent 70%)`;
+        
+        glowText.style.webkitMaskImage = maskStyle;
+        glowText.style.maskImage = maskStyle;
+      } else {
+        glowText.style.webkitMaskImage = "radial-gradient(circle 0px at 0px 0px, white, transparent)";
+        glowText.style.maskImage = "radial-gradient(circle 0px at 0px 0px, white, transparent)";
+      }
 
-  glowText.style.webkitMaskImage =
-    `radial-gradient(circle 160px at ${x}px ${y}px, white 0%, transparent 70%)`;
+      requestAnimationFrame(animate);
+    }
 
-  requestAnimationFrame(animate);
-}
-
-animate();
-
-</script>
-
+    animate();
+  </script>
 </body>
 </html>
