@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Athul Sidheeque</title>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -18,9 +19,10 @@
             font-family: Arial, Helvetica, sans-serif;
             color: #ffffff;
             overflow-x: hidden;
+            overflow-y: scroll; /* Forces scrollbar to prevent layout shift */
         }
 
-        /* FILM GRAIN */
+        /* FILM GRAIN - Fixed z-index to stay on top */
         body::after {
             content: "";
             position: fixed;
@@ -28,10 +30,10 @@
             background: url('https://grainy-gradients.vercel.app/noise.svg');
             opacity: 0.05;
             pointer-events: none;
-            z-index: 2000;
+            z-index: 10000;
         }
 
-        /* VERTICAL NAV */
+        /* 3. VERTICAL SCROLLING NAV */
         nav {
             position: fixed;
             top: 40px;
@@ -40,20 +42,50 @@
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            gap: 15px;
+            gap: 12px;
         }
 
-        nav a {
+        .nav-link {
+            position: relative;
             color: #fff;
             text-decoration: none;
-            font-size: 13px;
+            font-size: 13px; /* Smaller & Tighter as requested */
+            font-weight: 500;
             opacity: 0.5;
-            letter-spacing: 0.2em;
-            transition: 0.3s;
+            letter-spacing: 0.1em;
+            transition: opacity 0.3s;
+            overflow: hidden;
+            display: flex;
+            height: 18px;
+            align-items: center;
         }
-        nav a:hover { opacity: 1; }
+        .nav-link:hover { opacity: 1; }
 
-        /* SOCIALS */
+        /* The Scrolling "WORK" Animation */
+        .scrolling-link::after {
+            content: "workworkwork";
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: #000;
+            background: var(--accent-red);
+            padding: 0 4px;
+            text-transform: lowercase;
+            font-family: 'Archivo Black', Impact, sans-serif;
+            font-weight: 900;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .scrolling-link:hover::after {
+            animation: scrollTextWheel 1s linear infinite;
+        }
+
+        @keyframes scrollTextWheel {
+            0% { transform: translateY(0%); }
+            100% { transform: translateY(-66.6%); } /* Scrolls through two full words */
+        }
+
+        /* SOCIALS (Keeping your social links intact) */
         .socials {
             position: fixed;
             left: 30px;
@@ -64,7 +96,7 @@
             gap: 10px;
         }
 
-        .nav-item {
+        .social-item {
             position: relative;
             width: 50px;
             height: 50px;
@@ -93,27 +125,38 @@
             transition: fill 0.3s;
         }
 
-        .nav-item:hover .reveal { transform: scale(1); }
-        .nav-item:hover .icon { fill: #000; }
+        .social-item:hover .reveal { transform: scale(1); }
+        .social-item:hover .icon { fill: #000; }
 
-        /* SOUND TOGGLE (Bottom Right) */
+        /* 2. SOUND TOGGLE (Vertical, Fixed Right) */
         .sound-wrapper {
             position: fixed;
-            right: 40px;
-            bottom: 40px;
+            right: 30px;
+            bottom: 30px;
             font-size: 11px;
             letter-spacing: 0.3em;
             cursor: pointer;
             z-index: 1000;
-            display: flex;
-            gap: 8px;
             opacity: 0.6;
             transition: opacity 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
         }
         .sound-wrapper:hover { opacity: 1; }
-        #sound-state { font-weight: bold; color: var(--accent-red); }
+        
+        /* Only the state span toggles color and content */
+        #sound-state { 
+            font-weight: bold; 
+            color: #fff; /* White base, JavaScript toggles color */
+            margin-top: 10px;
+            transition: color 0.3s ease;
+        }
+        #sound-state.active { color: var(--accent-red); }
 
-        /* HERO */
+        /* 1. HERO (Magnetic Inversion) */
         .hero {
             height: 100vh;
             display: flex;
@@ -123,9 +166,11 @@
             position: relative;
         }
 
+        /* Container allows for magnetic shift */
         .hero-title-container {
-            transition: transform 0.1s ease-out;
             pointer-events: none;
+            position: relative;
+            text-align: center;
         }
 
         .hero-title {
@@ -135,13 +180,26 @@
             letter-spacing: -0.04em;
             text-transform: lowercase;
             color: #eaeaea;
-            text-align: center;
             margin: 0;
+            transition: transform 0.1s ease-out, opacity 0.1s ease-out; /* Slow lerp fallback */
         }
 
-        /* ABOUT */
+        /* Top layer (Red) revealed by mask */
+        .hero-title-top {
+            position: absolute;
+            inset: 0;
+            color: var(--accent-red);
+            font-family: 'Archivo Black', Impact, sans-serif; /* Brutalist font on hover */
+            font-weight: 900;
+            
+            /* Initial masked state */
+            -webkit-mask-image: radial-gradient(circle 0px at 0 0, white, transparent);
+            mask-image: radial-gradient(circle 0px at 0 0, white, transparent);
+        }
+
+        /* 4. ABOUT (Mobile Responsive Text Layout) */
         .about {
-            min-height: 80vh; /* Brought up as requested */
+            min-height: 80vh; 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -150,13 +208,13 @@
 
         .text-wrapper {
             position: relative;
-            max-width: 900px; /* Wider to fill space */
+            max-width: 1000px; /* Wider to fill space on desktop */
             padding: 40px;
             width: 100%;
         }
 
         .text {
-            font-size: 28px;
+            font-size: 32px; /* Large cinematic size on desktop */
             line-height: 1.6;
             font-weight: 500;
             user-select: none;
@@ -166,7 +224,7 @@
 
         .glow {
             position: absolute;
-            inset: 40px;
+            inset: 40px; /* Matches wrapper padding */
             color: var(--lime-glow);
             pointer-events: none;
             -webkit-mask-image: radial-gradient(circle 0px at 0 0, white, transparent);
@@ -178,39 +236,67 @@
             color: var(--accent-red);
             text-shadow: 0 0 10px rgba(247, 2, 2, 0.6);
         }
+
+        /* 4. RESPONSIVE DESIGN */
+        @media (max-width: 1024px) {
+            .text { font-size: 26px; }
+            .hero-title { font-size: 14vw; }
+        }
+
+        @media (max-width: 768px) {
+            .text { font-size: 22px; line-height: 1.8; }
+            .text-wrapper { padding: 20px; }
+            .glow { inset: 20px; }
+            .hero-title { font-size: 16vw; }
+
+            /* Re-orient Nav for Mobile */
+            nav {
+                top: auto;
+                bottom: 20px;
+                right: 20px;
+                left: 20px;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                gap: 0;
+            }
+            nav a { margin-bottom: 0; font-size: 11px; }
+            .sound-wrapper, .socials { display: none; } /* Hide fixed UI on phones */
+        }
     </style>
 </head>
 
 <body>
 
 <nav>
-    <a href="#">ABOUT</a>
-    <a href="#">WORK</a>
-    <a href="#">CONTACT</a>
+    <a href="#" class="nav-link">ABOUT</a>
+    <a href="#" class="nav-link scrolling-link">WORK</a>
+    <a href="#" class="nav-link">CONTACT</a>
 </nav>
 
 <div class="socials">
-    <a href="https://www.instagram.com/athul_sidiq" target="_blank" class="nav-item">
+    <a href="https://www.instagram.com/athul_sidiq" target="_blank" class="social-item">
         <div class="reveal"></div>
         <svg class="icon" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.058-1.69-.072-4.949-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
     </a>
-    <a href="https://www.linkedin.com/in/athul-sidiq/" target="_blank" class="nav-item">
+    <a href="https://www.linkedin.com/in/athul-sidiq/" target="_blank" class="social-item">
         <div class="reveal"></div>
         <svg class="icon" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
     </a>
-    <a href="https://www.youtube.com/@athul_sidiq" target="_blank" class="nav-item">
+    <a href="https://www.youtube.com/@athul_sidiq" target="_blank" class="social-item">
         <div class="reveal"></div>
         <svg class="icon" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
     </a>
 </div>
 
 <div class="sound-wrapper" id="soundToggle">
-    SOUND <span id="sound-state">ON</span>
+    SOUND <span id="sound-state" class="active">ON</span>
 </div>
 
 <section class="hero">
     <div class="hero-title-container" id="magneticHero">
         <h1 class="hero-title">athul<br>sidheeque</h1>
+        <h1 class="hero-title hero-title-top" id="heroTitleRed">athul<br>sidheeque</h1>
     </div>
 </section>
 
@@ -224,53 +310,71 @@
 </section>
 
 <script>
-/* MAGNETIC HERO & PARALLAX */
-const heroContainer = document.getElementById('magneticHero');
-const heroTitle = heroContainer.querySelector('.hero-title');
-
+// Global mouse state
+let mouse = { x: 0, y: 0 };
 window.addEventListener("mousemove", (e) => {
-    const x = (e.clientX - window.innerWidth / 2) * 0.02;
-    const y = (e.clientY - window.innerHeight / 2) * 0.02;
-    heroContainer.style.transform = `translate(${x}px, ${y}px)`;
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
 });
 
+// 1. MAGNETIC HERO & INVERSION PHYSICS
+const heroContainer = document.getElementById('magneticHero');
+const heroTitleRed = document.getElementById('heroTitleRed');
+let heroX = 0, heroY = 0; // LERP positions
+
+function heroPhysicsLoop() {
+    // 10% Lerp damping (current + (target - current) * friction)
+    heroX += (mouse.x - window.innerWidth / 2 - heroX) * 0.1;
+    heroY += (mouse.y - window.innerHeight / 2 - heroY) * 0.1;
+
+    // Apply smooth shift to the container (0.02 scaling multiplier for subtle effect)
+    heroContainer.style.transform = `translate(${heroX * 0.02}px, ${heroY * 0.02}px)`;
+
+    // Apply the Red Inversion Mask to the top layer
+    const heroRect = heroTitleRed.getBoundingClientRect();
+    const relX = mouse.x - heroRect.left;
+    const relY = mouse.y - heroRect.top;
+
+    heroTitleRed.style.webkitMaskImage = `radial-gradient(circle 200px at ${relX}px ${relY}px, white, transparent)`;
+    
+    requestAnimationFrame(heroPhysicsLoop);
+}
+heroPhysicsLoop();
+
+// 1. HERO PARALLAX ON SCROLL
 window.addEventListener("scroll", () => {
     const y = window.scrollY;
-    heroTitle.style.transform = `translateY(${y * 0.3}px)`;
-    heroTitle.style.opacity = 1 - y / 700;
+    // Parallax shift the base text itself (container has physics)
+    document.querySelectorAll(".hero-title").forEach(el => {
+        el.style.transform = `translateY(${y * 0.3}px)`;
+        el.style.opacity = 1 - y / 700;
+    });
 });
 
-/* GLOW TEXT */
-const base = document.getElementById("baseText");
-const glow = document.getElementById("glowText");
-glow.innerHTML = base.innerHTML;
+// 4. GLOW TEXT PHYSICS (Inherits global lerp)
+const baseText = document.getElementById("baseText");
+const glowText = document.getElementById("glowText");
+glowText.innerHTML = baseText.innerHTML;
 
-let curX=0, curY=0, tarX=0, tarY=0;
-let isInside = false;
+// Local lerp positions for the local about text bounding box
+let glowX = 0, glowY = 0;
 
-window.addEventListener("mousemove", e => {
-    tarX = e.clientX;
-    tarY = e.clientY;
-    isInside = true;
-});
+function glowPhysicsLoop() {
+    // Separate local lerp logic so the mask alignment stays perfect relative to its container
+    glowX += (mouse.x - glowX) * 0.1;
+    glowY += (mouse.y - glowY) * 0.1;
 
-function loop() {
-    curX += (tarX - curX) * 0.1;
-    curY += (tarY - curY) * 0.1;
+    const r = glowText.getBoundingClientRect();
+    const maskX = glowX - r.left;
+    const maskY = glowY - r.top;
 
-    const r = glow.getBoundingClientRect();
-    const maskX = curX - r.left;
-    const maskY = curY - r.top;
-
-    if(isInside) {
-        glow.style.webkitMaskImage = `radial-gradient(circle 180px at ${maskX}px ${maskY}px, white 0%, transparent 70%)`;
-    }
-    requestAnimationFrame(loop);
+    glowText.style.webkitMaskImage = `radial-gradient(circle 180px at ${maskX}px ${maskY}px, white 0%, transparent 70%)`;
+    requestAnimationFrame(glowPhysicsLoop);
 }
-loop();
+glowPhysicsLoop();
 
-/* MAGNETIC SOCIALS */
-document.querySelectorAll(".nav-item").forEach(item => {
+// 3. MAGNETIC SOCIALS (Keeping logic consistent)
+document.querySelectorAll(".social-item").forEach(item => {
     item.addEventListener("mousemove", e => {
         const rect = item.getBoundingClientRect();
         const dx = e.clientX - rect.left - rect.width / 2;
@@ -284,14 +388,15 @@ document.querySelectorAll(".nav-item").forEach(item => {
     });
 });
 
-/* SOUND TOGGLE */
+// 2. SOUND TOGGLE & ISOLATION
 const soundToggle = document.getElementById('soundToggle');
-const soundState = document.getElementById('sound-state');
+const soundStateSpan = document.getElementById('sound-state');
 let isSoundOn = true;
 
 soundToggle.addEventListener('click', () => {
     isSoundOn = !isSoundOn;
-    soundState.innerText = isSoundOn ? "ON" : "OFF";
+    soundStateSpan.innerText = isSoundOn ? "ON" : "OFF";
+    soundStateSpan.classList.toggle('active');
     // Future SFX control logic goes here
 });
 </script>
