@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" type="image/png" href="favicon-16x16.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Athul Sidheeque</title>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+
     <style>
         :root {
             --accent-red: #f70202;
-            --accent-green: #c3ff00;
+            --lime-glow: #c3ff00;
         }
 
         body {
@@ -17,9 +19,21 @@
             font-family: Arial, Helvetica, sans-serif;
             color: #ffffff;
             overflow-x: hidden;
+            overflow-y: scroll;
         }
 
-        /* 3. ROLLING NAV (Centered & Tighter) */
+        /* FILM GRAIN Overlay from previous code */
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 10000;
+        }
+
+        /* 2. CENTERED ROLLING NAV */
         nav {
             position: fixed;
             top: 40px;
@@ -27,8 +41,8 @@
             z-index: 1000;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Centered within the space */
-            gap: 8px; /* Decreased line spacing */
+            align-items: flex-end; /* Keeps them aligned to right but layout is centered */
+            gap: 8px; 
         }
 
         .nav-item {
@@ -36,12 +50,15 @@
             overflow: hidden;
             position: relative;
             cursor: pointer;
-            text-align: center;
+            text-align: right;
+            opacity: 0.6;
+            transition: opacity 0.3s;
         }
+        .nav-item:hover { opacity: 1; }
 
         .nav-link {
             display: block;
-            font-size: 13px; /* Decreased font size */
+            font-size: 13px;
             font-weight: 600;
             line-height: 18px;
             color: #fff;
@@ -50,10 +67,7 @@
             transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
         }
 
-        /* Rolling Effect */
-        .nav-item:hover .nav-link {
-            transform: translateY(-100%);
-        }
+        .nav-item:hover .nav-link { transform: translateY(-100%); }
 
         .nav-item::after {
             content: attr(data-text);
@@ -69,159 +83,264 @@
             transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
         }
 
-        .nav-item:hover::after {
-            transform: translateY(-100%);
+        .nav-item:hover::after { transform: translateY(-100%); }
+
+        /* SOCIALS Logic */
+        .socials {
+            position: fixed;
+            left: 30px;
+            bottom: 30px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        /* 1. HERO REVEAL (Dual Color) */
+        .social-item {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .reveal {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            transform: scale(0);
+            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .icon {
+            width: 20px;
+            height: 20px;
+            fill: #666;
+            z-index: 2;
+            transition: fill 0.3s;
+        }
+
+        .social-item:hover .reveal { transform: scale(1); }
+        .social-item:hover .icon { fill: #000; }
+
+        /* 3. SIDEWAYS SOUND TOGGLE */
+        .sound-wrapper {
+            position: fixed;
+            right: 40px;
+            bottom: 40px;
+            font-size: 11px;
+            letter-spacing: 0.3em;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+        .sound-wrapper:hover { opacity: 1; }
+        
+        #sound-state { 
+            font-weight: bold; 
+            min-width: 30px;
+            transition: color 0.3s ease;
+        }
+        #sound-state.on { color: var(--lime-glow); }
+        #sound-state.off { color: var(--accent-red); }
+
+        /* 1 & 4. HERO (Dual Color Inversion) */
         .hero {
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+        }
+
+        .hero-title-container {
+            position: relative;
             text-align: center;
+            pointer-events: auto; /* Allow hover detection */
         }
 
-        .hero-container {
-            position: relative;
-            cursor: none;
-        }
-
-        .hero-text {
-            font-size: 10vw;
-            line-height: 0.9;
+        .hero-title {
+            font-size: 11vw;
+            line-height: 0.85;
             font-weight: 500;
+            letter-spacing: -0.04em;
             text-transform: lowercase;
+            color: #fff; /* Normal state White */
             margin: 0;
-            color: #fff;
-            position: relative;
-            z-index: 1;
         }
 
-        .reveal-circle {
-            position: fixed;
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
+        /* Top layer (Revealed by mask) */
+        .hero-title-top {
+            position: absolute;
+            inset: 0;
+            color: #000; /* Hover state Black */
+            font-family: 'Archivo Black', sans-serif;
+            font-weight: 900;
             pointer-events: none;
-            transform: translate(-50%, -50%) scale(0);
-            transition: transform 0.3s ease, background-color 0.3s ease;
-            z-index: 2;
-            mix-blend-mode: difference; /* This handles the black text effect */
-            background-color: white; /* Base */
+            -webkit-mask-image: radial-gradient(circle 0px at 0 0, white, transparent);
+            mask-image: radial-gradient(circle 0px at 0 0, white, transparent);
         }
 
-        .hero-container:hover .reveal-circle {
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        /* 2. SOUND TOGGLE (Side-by-Side) */
-        .sound-ui {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            font-size: 11px;
-            letter-spacing: 0.2em;
-            cursor: pointer;
-            z-index: 1000;
+        /* 4. ABOUT GLOW */
+        .about {
+            min-height: 80vh; 
             display: flex;
-            gap: 8px;
             align-items: center;
+            justify-content: center;
+            padding-bottom: 100px;
         }
 
-        #sound-state {
-            font-weight: bold;
-            transition: color 0.3s;
-        }
-        #sound-state.on { color: var(--accent-green); }
-        #sound-state.off { color: var(--accent-red); }
-
-        /* Socials (Corrected alignment) */
-        .socials {
-            position: fixed;
-            left: 30px;
-            bottom: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        .text-wrapper {
+            position: relative;
+            max-width: 1000px;
+            padding: 40px;
         }
 
-        .social-icon {
-            width: 24px;
-            fill: #666;
-            transition: fill 0.3s;
+        .text {
+            font-size: 32px;
+            line-height: 1.6;
+            font-weight: 500;
         }
-        .social-icon:hover { fill: var(--accent-red); }
 
+        .base { color: #222; }
+
+        .glow {
+            position: absolute;
+            inset: 40px;
+            color: var(--lime-glow);
+            pointer-events: none;
+            -webkit-mask-image: radial-gradient(circle 0px at 0 0, white, transparent);
+            mask-image: radial-gradient(circle 0px at 0 0, white, transparent);
+            text-shadow: 0 0 10px rgba(195,255,0,0.7);
+        }
     </style>
 </head>
+
 <body>
 
-    <nav>
-        <div class="nav-item" data-text="About"><a href="#" class="nav-link">About</a></div>
-        <div class="nav-item" data-text="Work"><a href="#" class="nav-link">Work</a></div>
-        <div class="nav-item" data-text="Contact"><a href="#" class="nav-link">Contact</a></div>
-    </nav>
+<nav>
+    <div class="nav-item" data-text="About"><a href="#" class="nav-link">About</a></div>
+    <div class="nav-item" data-text="Work"><a href="#" class="nav-link">Work</a></div>
+    <div class="nav-item" data-text="Contact"><a href="#" class="nav-link">Contact</a></div>
+</nav>
 
-    <div class="sound-ui" id="soundToggle">
-        <span>SOUND</span>
-        <span id="sound-state" class="off">OFF</span>
+<div class="socials">
+    <a href="https://instagram.com/athul_sidiq" target="_blank" class="social-item">
+        <div class="reveal"></div>
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.058-1.69-.072-4.949-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+    </a>
+</div>
+
+<div class="sound-wrapper" id="soundToggle">
+    <span class="sound-text">SOUND</span>
+    <span id="sound-state" class="off">OFF</span>
+</div>
+
+<section class="hero">
+    <div class="hero-title-container" id="magneticHero">
+        <h1 class="hero-title">
+            <span id="athul">athul</span><br>
+            <span id="sidheeque">sidheeque</span>
+        </h1>
+        <h1 class="hero-title hero-title-top" id="heroTopLayer">
+            <span>athul</span><br>
+            <span>sidheeque</span>
+        </h1>
     </div>
+</section>
 
-    <section class="hero">
-        <div class="hero-container" id="heroArea">
-            <div class="reveal-circle" id="cursorCircle"></div>
-            <h1 class="hero-text">
-                <span id="name-athul">athul</span><br>
-                <span id="name-sidheeque">sidheeque</span>
-            </h1>
+<section class="about">
+    <div class="text-wrapper" id="wrapper">
+        <div class="text base" id="baseText">
+            I spend my days <span class="highlight">(and a lot of my nights)</span> exploring stories through my passion to create. I love the journey of becoming better, taking what I learn and turning it into something special. Nothing matters as much as the <span class="highlight">soul</span> of the project. From the first time I picked up a camera to learning the complexities, it’s all been about that one spark: the <span class="highlight">drive to capture</span> and <span class="highlight">deliver a feeling.</span> I don’t think I’ll ever stop being a student of the craft; there’s always a new way to see things.
         </div>
-    </section>
+        <div class="text glow" id="glowText"></div>
+    </div>
+</section>
 
-    <audio id="bgAudio" loop>
-        <source src="https://raw.githubusercontent.com/athulsidheeque/athulsidheeque.github.io/74a392a75b583daf072494b303fc376a161a9521/web%20audio.mp3" type="audio/mpeg">
-    </audio>
+<audio id="bgAudio" loop>
+    <source src="https://raw.githubusercontent.com/athulsidheeque/athulsidheeque.github.io/74a392a75b583daf072494b303fc376a161a9521/web%20audio.mp3" type="audio/mpeg">
+</audio>
 
-    <script>
-        const circle = document.getElementById('cursorCircle');
-        const heroArea = document.getElementById('heroArea');
-        const athul = document.getElementById('name-athul');
-        const sidheeque = document.getElementById('name-sidheeque');
+<script>
+let mouse = { x: 0, y: 0 };
+window.addEventListener("mousemove", (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+});
 
-        // Hero Reveal Color Logic
-        document.addEventListener('mousemove', (e) => {
-            circle.style.left = e.clientX + 'px';
-            circle.style.top = e.clientY + 'px';
-            
-            const rectAthul = athul.getBoundingClientRect();
-            const rectSid = sidheeque.getBoundingClientRect();
+// HERO LOGIC
+const heroContainer = document.getElementById('magneticHero');
+const topLayer = document.getElementById('heroTopLayer');
+const athul = document.getElementById('athul');
+let heroX = 0, heroY = 0;
 
-            // Check which name the cursor is closer to
-            if (e.clientY < rectSid.top) {
-                circle.style.backgroundColor = '#f70202'; // Red for Athul
-            } else {
-                circle.style.backgroundColor = '#c3ff00'; // Green for Sidheeque
-            }
-        });
+function heroPhysicsLoop() {
+    heroX += (mouse.x - window.innerWidth / 2 - heroX) * 0.1;
+    heroY += (mouse.y - window.innerHeight / 2 - heroY) * 0.1;
+    heroContainer.style.transform = `translate(${heroX * 0.02}px, ${heroY * 0.02}px)`;
 
-        // Sound Logic
-        const soundToggle = document.getElementById('soundToggle');
-        const soundState = document.getElementById('sound-state');
-        const audio = document.getElementById('bgAudio');
-        let playing = false;
+    const rect = topLayer.getBoundingClientRect();
+    const relX = mouse.x - rect.left;
+    const relY = mouse.y - rect.top;
 
-        soundToggle.addEventListener('click', () => {
-            if (!playing) {
-                audio.play();
-                soundState.innerText = "ON";
-                soundState.className = "on";
-            } else {
-                audio.pause();
-                soundState.innerText = "OFF";
-                soundState.className = "off";
-            }
-            playing = !playing;
-        });
-    </script>
+    // Dual Color Logic
+    const athulRect = athul.getBoundingClientRect();
+    const isOverAthul = mouse.y < (athulRect.bottom + 10);
+    
+    // Smoothly update mask and color background
+    const color = isOverAthul ? '#f70202' : '#c3ff00';
+    topLayer.style.webkitMaskImage = `radial-gradient(circle 120px at ${relX}px ${relY}px, white 100%, transparent 100%)`;
+    topLayer.style.backgroundColor = color;
+    topLayer.style.mixBlendMode = "lighten"; // Ensures black text stays sharp on color
+
+    requestAnimationFrame(heroPhysicsLoop);
+}
+heroPhysicsLoop();
+
+// GLOW TEXT Logic
+const baseText = document.getElementById("baseText");
+const glowText = document.getElementById("glowText");
+glowText.innerHTML = baseText.innerHTML;
+let gx = 0, gy = 0;
+
+function glowLoop() {
+    gx += (mouse.x - gx) * 0.1;
+    gy += (mouse.y - gy) * 0.1;
+    const r = glowText.getBoundingClientRect();
+    glowText.style.webkitMaskImage = `radial-gradient(circle 150px at ${gx - r.left}px ${gy - r.top}px, white, transparent)`;
+    requestAnimationFrame(glowLoop);
+}
+glowLoop();
+
+// SOUND Logic
+const soundToggle = document.getElementById('soundToggle');
+const soundState = document.getElementById('sound-state');
+const audio = document.getElementById('bgAudio');
+let isPlaying = false;
+
+soundToggle.addEventListener('click', () => {
+    isPlaying = !isPlaying;
+    if (isPlaying) {
+        audio.play();
+        soundState.innerText = "ON";
+        soundState.className = "on";
+    } else {
+        audio.pause();
+        soundState.innerText = "OFF";
+        soundState.className = "off";
+    }
+});
+</script>
+
 </body>
 </html>
