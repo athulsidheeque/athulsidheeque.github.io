@@ -135,80 +135,110 @@
             font-weight: 600;
         }
 
-        /* STACKED SKILLS - Box effect restored and tight spacing */
+        /* STACKED SKILLS */
         .skills-stack {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
             gap: 2px;
         }
-
         .skill-line {
             font-family: 'Archivo Black', sans-serif;
-            font-size: clamp(20px, 2.2vw, 34px); /* Decreased font size */
-            line-height: 0.85; /* Tighter leading */
+            font-size: clamp(20px, 2.2vw, 34px);
+            line-height: 0.85;
             letter-spacing: -0.04em;
             color: #2a2a2a; 
             transition: all 0.3s ease;
             white-space: nowrap;
-            padding: 2px 0px; /* Flush left */
+            padding: 2px 0px;
             cursor: default;
             text-align: left;
         }
-
-        /* Box effects on hover */
-        .skill-line:nth-child(odd):hover {
-            background: var(--lime-glow);
-            color: #000;
-            padding: 2px 10px; /* Slight horizontal expansion on hover */
-            transform: translateX(8px);
-        }
-
-        .skill-line:nth-child(even):hover {
-            background: var(--accent-red);
-            color: #000;
-            padding: 2px 10px;
-            transform: translateX(8px);
-        }
+        .skill-line:nth-child(odd):hover { background: var(--lime-glow); color: #000; padding: 2px 10px; transform: translateX(8px); }
+        .skill-line:nth-child(even):hover { background: var(--accent-red); color: #000; padding: 2px 10px; transform: translateX(8px); }
 
         /* software container */
         .software-container { display: flex; flex-direction: column; align-items: center; gap: 15px; }
         .software-row { display: flex; gap: 12px; }
-
         .soft-icon {
             width: 60px; height: 60px; background: #0a0a0a; border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
             border: 1px solid #1a1a1a; transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
             cursor: crosshair; overflow: hidden;
         }
+        .logo-img { width: 32px; height: 32px; object-fit: contain; filter: grayscale(1); opacity: 0.6; transition: 0.4s ease; }
+        .soft-icon:hover { border-color: var(--accent-red); background: #0f0202; transform: translateY(-8px) scale(1.05); box-shadow: 0 10px 30px rgba(247, 2, 2, 0.3); }
+        .soft-icon:hover .logo-img { filter: grayscale(0); opacity: 1; }
 
-        .logo-img {
-            width: 32px; height: 32px;
-            object-fit: contain;
-            filter: grayscale(1);
-            opacity: 0.6;
-            transition: 0.4s ease;
+        /* WORK SECTION */
+        .work-section {
+            padding: 100px 30px;
+            background: #050505;
         }
-
-        .soft-icon:hover {
-            border-color: var(--accent-red);
-            background: #0f0202; transform: translateY(-8px) scale(1.05);
-            box-shadow: 0 10px 30px rgba(247, 2, 2, 0.3);
+        .work-grid {
+            display: flex;
+            height: 90vh;
+            gap: 10px;
         }
+        .work-col {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+            border-left: 1px solid #111;
+            padding: 10px;
+            gap: 15px;
+            transition: flex 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .work-col:hover {
+            flex: 2;
+            border-left-color: var(--accent-red);
+            background: rgba(255,255,255,0.02);
+        }
+        .work-label {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            font-family: 'Archivo Black', sans-serif;
+            font-size: clamp(14px, 1.8vw, 22px);
+            text-transform: uppercase;
+            color: #222;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            transition: color 0.3s;
+        }
+        .work-col:hover .work-label { color: #fff; }
         
-        .soft-icon:hover .logo-img {
-            filter: grayscale(0);
-            opacity: 1;
+        .media-stack {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
+        .media-stack::-webkit-scrollbar { display: none; }
+        
+        .media-item {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            overflow: hidden;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+        .media-item iframe { width: 100%; height: 100%; border: none; }
+        .empty-slot { display: flex; align-items: center; justify-content: center; font-size: 10px; color: #1a1a1a; letter-spacing: 2px; text-transform: uppercase; }
 
-        /* mobile adjustments */
         @media (max-width: 768px) {
             .about { padding: 0 30px 100px 30px; }
             .info-split { grid-template-columns: 1fr; }
             .v-line { display: none; }
-            .info-column.left-align { align-items: center; }
-            .skills-stack { align-items: center; }
-            .skill-line { text-align: center; }
+            .work-grid { flex-direction: column; height: auto; }
+            .work-col { flex-direction: column; border-left: none; border-top: 1px solid #111; }
+            .work-label { writing-mode: horizontal-tb; transform: rotate(0); justify-content: flex-start; margin-bottom: 10px; }
         }
     </style>
 </head>
@@ -258,7 +288,6 @@
 
     <div class="info-split">
         <div class="v-line"></div>
-        
         <div class="info-column left-align">
             <h3>what i do</h3>
             <div class="skills-stack">
@@ -270,7 +299,6 @@
                 <div class="skill-line">PRODUCT VISUALIZATION</div>
             </div>
         </div>
-
         <div class="info-column">
             <h3>softwares i use</h3>
             <div class="software-container">
@@ -286,6 +314,61 @@
                     <div class="soft-icon" title="Adobe Illustrator"><img src="https://dl.svgcdn.com/png/logos/adobe-illustrator-400.png" alt="Ai" class="logo-img"></div>
                     <div class="soft-icon" title="Blender"><img src="https://download.blender.org/branding/blender_logo_socket.png" alt="Blender" class="logo-img"></div>
                 </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="work-section" id="work">
+    <div class="work-grid">
+        <div class="work-col">
+            <div class="work-label">Commercials</div>
+            <div class="media-stack">
+                <div class="media-item">
+                    <iframe src="https://www.youtube.com/embed/sw7qHOISOn8?si=dGjeVC7_qjPHHZ_3&amp;controls=0" title="Commercial" allowfullscreen></iframe>
+                </div>
+                <div class="media-item empty-slot">Coming Soon</div>
+                <div class="media-item empty-slot">Coming Soon</div>
+            </div>
+        </div>
+
+        <div class="work-col">
+            <div class="work-label">Product</div>
+            <div class="media-stack">
+                <div class="media-item">
+                    <iframe src="https://www.youtube.com/embed/uS1-Km2wDNM?autoplay=1&mute=1&controls=1&loop=1&playlist=uS1-Km2wDNM&rel=0&modestbranding=1&start=1&playsinline=1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen playsinline></iframe>
+                </div>
+                <div class="media-item empty-slot">Coming Soon</div>
+                <div class="media-item empty-slot">Coming Soon</div>
+            </div>
+        </div>
+
+        <div class="work-col">
+            <div class="work-label">Motion</div>
+            <div class="media-stack">
+                <div class="media-item">
+                    <iframe src="https://player.vimeo.com/video/928421563?autoplay=1&muted=1&loop=1&autopause=0&controls=1&title=0&byline=0&portrait=0&playsinline=1#t=0.5s" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen playsinline></iframe>
+                </div>
+                <div class="media-item empty-slot">Coming Soon</div>
+                <div class="media-item empty-slot">Coming Soon</div>
+            </div>
+        </div>
+
+        <div class="work-col">
+            <div class="work-label">Photography</div>
+            <div class="media-stack">
+                <div class="media-item empty-slot">Portfolio Gallery</div>
+                <div class="media-item empty-slot">Portfolio Gallery</div>
+                <div class="media-item empty-slot">Portfolio Gallery</div>
+            </div>
+        </div>
+
+        <div class="work-col">
+            <div class="work-label">Color</div>
+            <div class="media-stack">
+                <div class="media-item empty-slot">Grading Reel</div>
+                <div class="media-item empty-slot">Grading Reel</div>
+                <div class="media-item empty-slot">Grading Reel</div>
             </div>
         </div>
     </div>
